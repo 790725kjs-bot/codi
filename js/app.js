@@ -14,7 +14,7 @@
   const DAY_NAMES = ['오늘', '내일', '모레'];
 
   const state = {
-    tab: 'today', theme: 'out', day: 0, shopView: 'advice',
+    tab: 'today', theme: 'out', day: 0, shopView: 'advice', worn: [], wornOpen: null, prefs: { pairs: {}, colors: {} },
     items: [], settings: loadSettings(), forecast: null, weatherError: null,
     closetCat: 'all', closetStatus: 'all',
   };
@@ -87,6 +87,7 @@
         state.settings = loadSettings();
         photoUrls.clear();
         await reloadItems();
+        await reloadWorn();
       }
       if (announce && result) toast(`동기화 완료 (받음 ${result.pulled}, 올림 ${result.pushed})`);
       if (!sheet.open && (announce || (result && result.pulled))) render();
@@ -149,7 +150,7 @@
   }
 
   function context(theme, weather) {
-    return { theme, weather, profile: state.settings.profile, feedback: state.settings.feedback, today: today() };
+    return { theme, weather, profile: state.settings.profile, feedback: state.settings.feedback, prefs: state.prefs, today: today() };
   }
 
   // ---------- 오늘 코디 ----------
@@ -411,12 +412,207 @@
       const wash = new Set([...form.querySelectorAll('[name=wash]:checked')].map((x) => x.value));
       for (const p of parts) await DB.put('items', { ...p, lastWorn: today(), status: wash.has(p.id) ? 'wash' : p.status, updated: Date.now() });
       queueSync();
-      await DB.put('log', { id: `${today()}-${state.theme}`, date: today(), theme: state.theme, items: ids });
+      // 내 코디 탭에도 남긴다. 같은 날 같은 주제는 하나로 합치고, 이미 남긴 사진과 별점은 유지한다.
+      const wornId = `w${today()}-${state.theme}`;
+      const before = state.worn.find((r) => r.id === wornId) || {};
+      await DB.put('log', { photo: null, rating: null, chips: [], memo: '', ...before, id: wornId, kind: 'worn', date: today(),
+        theme: state.theme, items: ids, weather: weatherOn(today()), updated: Date.now() });
       await reloadItems();
+      await reloadWorn();
       sheet.close();
-      toast('기록했습니다');
+      toast('기록했습니다. 내 코디 탭에서 사진과 이유를 더할 수 있습니다');
       render();
     };
+  }
+
+  // ---------- 내 코디 (실제로 입은 코디 기록과 평가) ----------
+  const CHIPS = [['color', '색 조합이 좋아서'], ['comfort', '편해서'], ['fit', '핏이 좋아 보여서'],
+    ['praise', '칭찬받아서'], ['weather', '날씨에 맞아서'], ['occasion', '자리에 맞아서']];
+  const ROLES = [['top', '상의'], ['outer', '아우터'], ['bottom', '하의'], ['shoes', '신발']];
+  const stars = (n) => (n ? '★'.repeat(n) + '☆'.repeat(5 - n) : '별점 없음');
+
+  async function reloadWorn() {
+    state.worn = (await DB.all('log')).filter((r) => r.kind === 'worn' && !r.deleted)
+      .sort((a, b) => (b.date + b.id).localeCompare(a.date + a.id));
+  }
+
+  function weatherOn(date) {
+    if (state.forecast && state.forecast[0] && state.forecast[0].date === date) return state.forecast[0];
+    try { return JSON.parse(localStorage.getItem('codi-weather-log') || '{}')[date] || null; } catch (e) { return null; }
+  }
+
+  // 기록에 적힌 옷을 옷장에서 찾아 채널 가이드로 평가한다. 상의나 하의가 없으면 평가하지 않는다.
+  function evaluateRecord(rec) {
+    const worn = rec.items.map((id) => state.items.find((i) => i.id === id)).filter(Boolean);
+    const parts = {};
+    for (const [role] of ROLES) parts[role] = worn.find((i) => i.cat === role) || null;
+    if (!parts.top || !parts.bottom) return null;
+    const ctx = { theme: rec.theme, weather: rec.weather || null, profile: state.settings.profile, today: today() };
+    return { parts, worn, ctx, ev: E.evaluate(parts, ctx) };
+  }
+
+  // 별점과 이유를 추천 순위에 반영할 값으로 바꾼다. 가이드와 부합할 때만 크게 올린다.
+  function computePrefs() {
+    const pairs = {}, colors = {};
+    for (const rec of [...state.worn].reverse()) {
+      const res = rec.rating && evaluateRecord(rec);
+      if (!res) continue;
+      const { top, bottom } = res.parts, ok = res.ev.guideOk;
+      let delta = 0;
+      if (rec.rating >= 4) delta = ok ? (rec.rating === 5 ? 5 : 4) : 1;
+      else if (rec.rating <= 2) delta = -6;
+      if (delta) pairs[`${top.id}|${bottom.id}`] = { delta, guideOk: ok };
+      if (rec.rating >= 4 && ok && (rec.chips || []).includes('color')) colors[`${top.color}|${bottom.color}`] = 1.5;
+    }
+    state.prefs = { pairs, colors };
+  }
+
+  function verdict(ev) {
+    if (ev.guideOk && ev.score >= 8) return ['가이드와 잘 맞음', 'good'];
+    if (ev.guideOk || ev.score >= 3) return ['무난함', ''];
+    return ['아쉬운 점 있음', 'warn'];
+  }
+
+  function prefLine(rec, ev) {
+    if (!rec.rating) return '별점을 남기면 추천 순위에 반영됩니다.';
+    if (rec.rating >= 4) {
+      return ev.guideOk ? '선호하고 채널 가이드와도 부합합니다. 이 조합을 추천에서 크게 우선합니다.'
+        : '선호하지만 가이드와 다른 점이 있어, 추천에서는 약하게만 우선합니다.';
+    }
+    if (rec.rating <= 2) return '선호도가 낮아 이 조합은 추천에서 뒤로 미룹니다.';
+    return '보통으로 평가해 추천 순위는 그대로 둡니다. 4점 이상이면 우선합니다.';
+  }
+
+  function wornCard(rec) {
+    const res = evaluateRecord(rec);
+    const [label, cls] = res ? verdict(res.ev) : ['평가하려면 상의와 하의를 골라 주세요', ''];
+    const url = photoUrl(rec);
+    return `<button class="card worn" data-worn="${rec.id}">
+      ${url ? `<img class="thumb shot" src="${url}" alt="">` : '<div class="thumb shot muted">사진 없음</div>'}
+      <div class="info"><strong>${rec.date}</strong> <span class="muted small">${C.THEMES.find((t) => t.id === rec.theme).name}</span>
+        <div><span class="tag ${cls}">${label}</span></div>
+        <div class="stars">${stars(rec.rating)}</div>
+        <div class="small muted">${esc(res ? res.worn.map(itemLabel).join(' + ') : '')}</div>
+        ${rec.memo ? `<div class="small">“${esc(rec.memo)}”</div>` : ''}</div></button>`;
+  }
+
+  function wornDetail(rec) {
+    const res = evaluateRecord(rec);
+    const url = photoUrl(rec);
+    const link = (x) => (x.src ? ` <a href="${x.src.url}" target="_blank" rel="noopener">근거 영상</a>` : '');
+    let body = '<section class="card"><p class="muted small">상의와 하의를 골라야 평가할 수 있습니다. 수정에서 입은 옷을 골라 주세요.</p></section>';
+    if (res) {
+      const { ev, parts, ctx, worn } = res;
+      const [label, cls] = verdict(ev);
+      const swaps = E.suggestSwaps(parts, ctx, state.items);
+      const roleName = Object.fromEntries(ROLES);
+      body = `<section class="card"><div class="row between"><h2 style="margin:0">평가</h2><span class="tag ${cls}">${label}</span></div>
+          <p class="small muted" style="margin-top:4px">${rec.weather ? `그날 체감 ${rec.weather.feel}℃ 기준` : '그날 날씨 기록이 없어 기온은 평가하지 않았습니다'} · 채널 가이드 규칙으로 평가</p>
+          <div class="pieces" style="margin-top:10px">${worn.map((p) => `<div class="piece">${thumb(p)}<span class="cap">${esc(itemLabel(p))}</span></div>`).join('')}</div></section>
+        <section class="card"><h2>좋은 점</h2>${ev.reasons.length
+    ? `<ul class="reasons" style="margin:0">${ev.reasons.map((x) => `<li>${esc(x.text)}${link(x)}</li>`).join('')}</ul>`
+    : '<p class="small muted">채널 조합표에 딱 맞는 부분은 없지만, 무채색 중심이면 무난한 조합입니다.</p>'}</section>
+        <section class="card"><h2>아쉬운 점</h2>${ev.issues.length
+    ? `<ul class="issues">${ev.issues.map((x) => `<li>${esc(x.text)}${link(x)}</li>`).join('')}</ul>`
+    : '<p class="small muted">가이드에 어긋나는 부분을 찾지 못했습니다.</p>'}
+          ${swaps.length ? `<h3 style="margin-top:12px">이렇게 바꾸면 더 좋습니다</h3><ul class="list" style="margin-top:8px">${swaps.map((s) => `<li class="small">
+            ${roleName[s.role]}: ${esc(itemLabel(s.from))} → <strong>${esc(itemLabel(s.to))}</strong></li>`).join('')}</ul>` : ''}</section>
+        <section class="card"><h2>내 선호와 추천 반영</h2>
+          <div class="stars">${stars(rec.rating)}</div>
+          ${(rec.chips || []).length ? `<div class="row" style="margin-top:6px">${rec.chips.map((c) => `<span class="tag">${esc((CHIPS.find((x) => x[0] === c) || [0, c])[1])}</span>`).join('')}</div>` : ''}
+          ${rec.memo ? `<p class="small" style="margin-top:6px">“${esc(rec.memo)}”</p>` : ''}
+          <div class="note">${prefLine(rec, ev)}</div></section>`;
+    }
+    return `<div class="row between"><button class="btn" data-act="wornback">← 목록</button>
+        <div class="row"><button class="btn" data-act="wornedit">수정</button><button class="btn danger" data-act="worndel">삭제</button></div></div>
+      <section class="card"><strong>${rec.date}</strong> <span class="muted small">${C.THEMES.find((t) => t.id === rec.theme).name}</span>
+        ${url ? `<img class="fullshot" src="${url}" alt="내가 입은 코디">` : ''}</section>
+      ${body}`;
+  }
+
+  function renderWorn() {
+    const open = state.wornOpen && state.worn.find((r) => r.id === state.wornOpen);
+    if (open) { view.innerHTML = wornDetail(open); return; }
+    view.innerHTML = `<section class="card"><h2>내가 입은 코디</h2>
+        <p class="small muted">전신 사진을 올리고 입은 옷을 옷장에서 고르면, 채널 가이드로 좋은 점과 아쉬운 점을 알려 줍니다.
+          별점과 이유를 남기면 가이드와 부합하는 코디를 추천에서 우선합니다. 사진은 기록용이며, 평가는 고른 옷을 기준으로 합니다.</p>
+        <div class="actions"><button class="btn primary grow" data-act="wornadd">입은 코디 기록하기</button></div></section>
+      ${state.worn.length ? state.worn.map(wornCard).join('') : '<section class="card empty">아직 기록이 없습니다.</section>'}`;
+  }
+
+  function wornForm(rec, isNew) {
+    const picker = ([cat, name]) => {
+      const list = state.items.filter((i) => i.cat === cat);
+      return `<label>${name}${cat === 'top' || cat === 'bottom' ? ' (필수)' : ''}
+        <div class="picker">${list.length ? list.map((i) => `<button type="button" class="pick ${rec.items.includes(i.id) ? 'on' : ''}" data-pick="${i.id}" data-cat="${cat}" title="${esc(itemLabel(i))}">${thumb(i)}</button>`).join('')
+    : '<span class="small muted">옷장에 등록된 것이 없습니다</span>'}</div></label>`;
+    };
+    const draw = () => {
+      const url = photoUrl(rec);
+      sheet.innerHTML = `<form class="form" method="dialog" id="wornForm">
+        <h2>${isNew ? '입은 코디 기록' : '기록 수정'}</h2>
+        <div class="row">${url ? `<img class="thumb preview" src="${url}" alt="">` : ''}
+          <button type="button" class="btn" data-act="pickphoto">${url ? '사진 바꾸기' : '전신 사진 고르기'}</button>
+          <input id="wornFile" type="file" accept="image/*" hidden></div>
+        <div class="row"><label style="flex:1">날짜<input type="date" name="date" value="${rec.date}" max="${today()}"></label>
+          <label style="flex:1">주제<select name="theme">${C.THEMES.map((t) => `<option value="${t.id}" ${t.id === rec.theme ? 'selected' : ''}>${t.name}</option>`).join('')}</select></label></div>
+        ${[...ROLES, ['acc', '액세서리']].map(picker).join('')}
+        <label>얼마나 마음에 들었나요<div class="rate">${[1, 2, 3, 4, 5].map((n) => `<button type="button" data-rate="${n}" class="${rec.rating >= n ? 'on' : ''}">★</button>`).join('')}</div></label>
+        <label>이렇게 입은 이유 (여러 개 선택 가능)<div class="row">${CHIPS.map(([id, name]) => `<button type="button" class="chip ${rec.chips.includes(id) ? 'on' : ''}" data-chip="${id}">${name}</button>`).join('')}</div></label>
+        <label>메모 (선택)<input type="text" name="memo" value="${esc(rec.memo || '')}" placeholder="예: 모임 자리라 단정하게"></label>
+        <div class="actions"><button type="button" class="btn" data-act="cancel">취소</button>
+          <button type="submit" class="btn primary grow">저장하고 평가 보기</button></div></form>`;
+      if (!sheet.open) sheet.showModal();
+      const form = $('#wornForm');
+      const keep = () => { rec.date = form.date.value || rec.date; rec.theme = form.theme.value; rec.memo = form.memo.value.trim(); };
+      form.onclick = (e) => {
+        const b = e.target.closest('button');
+        if (!b) return;
+        const d = b.dataset;
+        if (d.pick) {
+          keep();
+          const same = state.items.filter((i) => i.cat === d.cat).map((i) => i.id);
+          const had = rec.items.includes(d.pick);
+          if (d.cat !== 'acc') rec.items = rec.items.filter((id) => !same.includes(id));
+          else rec.items = rec.items.filter((id) => id !== d.pick);
+          if (!had) rec.items.push(d.pick);
+          const scroll = sheet.scrollTop; draw(); sheet.scrollTop = scroll;
+        } else if (d.rate) { keep(); rec.rating = rec.rating === Number(d.rate) ? Number(d.rate) - 1 || null : Number(d.rate); const s = sheet.scrollTop; draw(); sheet.scrollTop = s; }
+        else if (d.chip) { keep(); rec.chips = rec.chips.includes(d.chip) ? rec.chips.filter((c) => c !== d.chip) : rec.chips.concat(d.chip); const s = sheet.scrollTop; draw(); sheet.scrollTop = s; }
+        else if (d.act === 'pickphoto') {
+          const input = $('#wornFile');
+          input.onchange = async () => {
+            if (!input.files[0]) return;
+            keep();
+            try { rec.photo = (await shrinkPhoto(input.files[0])).blob; photoUrls.delete(rec.id); draw(); }
+            catch (err) { toast('읽을 수 없는 사진입니다'); }
+          };
+          input.click();
+        } else if (d.act === 'cancel') { photoUrls.delete(rec.id); sheet.close(); }
+      };
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        keep();
+        const cats = rec.items.map((id) => (state.items.find((i) => i.id === id) || {}).cat);
+        if (!cats.includes('top') || !cats.includes('bottom')) { toast('상의와 하의를 골라 주세요'); return; }
+        rec.weather = weatherOn(rec.date);
+        rec.updated = Date.now();
+        await DB.put('log', rec);
+        photoUrls.delete(rec.id);
+        await reloadWorn();
+        queueSync();
+        sheet.close();
+        state.wornOpen = rec.id;
+        render();
+        window.scrollTo(0, 0);
+      };
+    };
+    draw();
+  }
+
+  function newWorn() {
+    return { id: `w${Date.now()}${Math.random().toString(36).slice(2, 6)}`, kind: 'worn', date: today(), theme: state.theme,
+      items: [], photo: null, rating: null, chips: [], memo: '', weather: null };
   }
 
   // ---------- 쇼핑 ----------
@@ -547,18 +743,19 @@
   }
 
   // ---------- 라우팅과 이벤트 ----------
-  const RENDER = { today: renderToday, closet: renderCloset, shop: renderShop, settings: renderSettings };
-  const SUB = { today: '', closet: '사진으로 등록', shop: '부족한 옷과 특가', settings: '' };
+  const RENDER = { today: renderToday, closet: renderCloset, worn: renderWorn, shop: renderShop, settings: renderSettings };
+  const SUB = { today: '', closet: '사진으로 등록', worn: '입은 코디 평가', shop: '부족한 옷과 특가', settings: '' };
 
   function render() {
     document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('on', b.dataset.tab === state.tab));
     $('#subtitle').textContent = SUB[state.tab];
+    computePrefs();
     RENDER[state.tab]();
   }
 
   $('#tabs').onclick = (e) => {
     const b = e.target.closest('[data-tab]');
-    if (b) { state.tab = b.dataset.tab; render(); window.scrollTo(0, 0); }
+    if (b) { state.tab = b.dataset.tab; state.wornOpen = null; render(); window.scrollTo(0, 0); }
   };
 
   view.addEventListener('click', async (e) => {
@@ -577,6 +774,17 @@
       state.settings.feedback[d.pair] = Number(d.fb);
       saveShared();
       toast(d.fb === '1' ? '이 조합을 더 자주 추천합니다' : '이 조합은 추천하지 않습니다');
+      render();
+    } else if (d.worn) { state.wornOpen = d.worn; render(); window.scrollTo(0, 0);
+    } else if (d.act === 'wornadd') { wornForm(newWorn(), true);
+    } else if (d.act === 'wornback') { state.wornOpen = null; render();
+    } else if (d.act === 'wornedit') { wornForm(structuredClone(state.worn.find((r) => r.id === state.wornOpen)), false);
+    } else if (d.act === 'worndel') {
+      if (!confirm('이 기록을 삭제할까요?')) return;
+      await DB.put('log', { id: state.wornOpen, kind: 'worn', deleted: true, updated: Date.now() });
+      state.wornOpen = null;
+      await reloadWorn();
+      queueSync();
       render();
     } else if (d.act === 'add') {
       const input = $('#file');
@@ -654,6 +862,7 @@
       history.replaceState(null, '', location.pathname);
     }
     await reloadItems();
+    await reloadWorn();
     // 테스트용: 주소 끝에 #demo 를 붙이면 예시 옷장으로 채운다 (옷장이 비어 있을 때만)
     if (location.hash === '#demo' && !state.items.length && window.CODI_DEMO) {
       for (const item of window.CODI_DEMO()) await DB.put('items', item);

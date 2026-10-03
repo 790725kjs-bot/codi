@@ -29,13 +29,14 @@
   }
 
   // 두 색의 궁합 점수. 채널 규칙에 있으면 가산, 무채색이 끼면 무난, 유채색끼리 규칙에 없으면 감점
-  function pairScore(table, key, value, label, src, reasons) {
+  function pairScore(table, key, value, label, src, reasons, issues) {
     if (inList(table, key, value)) {
       reasons.push({ text: label, src });
       return 3;
     }
     if (key === value) return isNeutral(key) ? 0.5 : -1;
     if (isNeutral(key) || isNeutral(value)) return 1;
+    issues.push({ kind: 'color', text: `${label}: 채널 조합표에 없는 유채색끼리의 조합`, src });
     return -3;
   }
 
@@ -47,23 +48,31 @@
   function scoreCombo(combo, ctx) {
     const { top, outer, bottom, shoes } = combo;
     const { theme, weather, profile, feedback, today } = ctx;
-    const reasons = [];
+    const reasons = [], issues = [];
     let score = 0;
 
     score += pairScore(R.topByBottom, bottom.color, top.color,
-      `${colorName(bottom.color)} 하의에 ${colorName(top.color)} 상의`, R.src.topBottom, reasons);
+      `${colorName(bottom.color)} 하의에 ${colorName(top.color)} 상의`, R.src.topBottom, reasons, issues);
     if (outer) {
       score += pairScore(R.bottomByOuter, outer.color, bottom.color,
-        `${colorName(outer.color)} 아우터에 ${colorName(bottom.color)} 하의`, R.src.outerBottom, reasons);
-      if (outer.color === top.color) score -= 1.5;
-      else if (!isNeutral(outer.color) && !isNeutral(top.color) && outer.color !== top.color) score -= 2;
+        `${colorName(outer.color)} 아우터에 ${colorName(bottom.color)} 하의`, R.src.outerBottom, reasons, issues);
+      if (outer.color === top.color) {
+        score -= 1.5;
+        issues.push({ kind: 'minor', text: `아우터와 상의가 같은 ${colorName(top.color)}이라 밋밋할 수 있음` });
+      } else if (!isNeutral(outer.color) && !isNeutral(top.color)) {
+        score -= 2;
+        issues.push({ kind: 'color', text: `아우터(${colorName(outer.color)})와 상의(${colorName(top.color)})가 모두 유채색` });
+      }
     }
     if (shoes) {
       score += pairScore(R.shoesByBottom, bottom.color, shoes.color,
-        `${colorName(bottom.color)} 바지에 ${colorName(shoes.color)} 신발`, R.src.bottomShoes, reasons);
+        `${colorName(bottom.color)} 바지에 ${colorName(shoes.color)} 신발`, R.src.bottomShoes, reasons, issues);
     }
 
-    if (R.avoid.some(([t, b]) => t === top.color && b === bottom.color)) score -= 3;
+    if (R.avoid.some(([t, b]) => t === top.color && b === bottom.color)) {
+      score -= 3;
+      issues.push({ kind: 'color', text: `${colorName(top.color)} 상의에 ${colorName(bottom.color)} 하의는 채널이 애매하다고 한 조합`, src: v('QP8eNqOfNzo') });
+    }
 
     const worn = [top, outer, bottom].filter(Boolean).map((x) => x.color);
     const trio = trioHit(worn.concat(shoes ? [shoes.color] : []));
@@ -71,7 +80,10 @@
       score += 4;
       reasons.push({ text: `3색 꿀조합: ${trio.colors.map(colorName).join(' + ')}`, src: trio.src });
     }
-    if (new Set(worn).size > 3) score -= 2;
+    if (new Set(worn).size > 3) {
+      score -= 2;
+      issues.push({ kind: 'color', text: '옷 색이 3가지를 넘음 (채널은 3색 안쪽 조합을 권함)', src: R.src.trio });
+    }
 
     // 옷 종류 조합
     const has = (list, item) => (list == null ? !item : !!item && list.includes(item.type));
@@ -99,7 +111,11 @@
     const parts = [top, outer, bottom, shoes].filter(Boolean);
     const formal = parts.map((x) => C.type[x.type].formal);
     if (theme === 'out') {
-      if (Math.max(...formal) - Math.min(...formal) >= 2) score -= 4;
+      if (Math.max(...formal) - Math.min(...formal) >= 2) {
+        score -= 4;
+        const dressy = parts.find((x) => C.type[x.type].formal === 2), loose = parts.find((x) => C.type[x.type].formal === 0);
+        issues.push({ kind: 'formal', text: `격식 차이가 큰 옷이 섞임 (${C.type[dressy.type].name} + ${C.type[loose.type].name})` });
+      }
       const want = profile.style === 'casual' ? 1 : 2;
       const weight = profile.style === 'both' ? 0.4 : 0.8;
       score += weight * formal.filter((f) => f === want || (profile.style === 'both' && f >= 1)).length;
@@ -115,21 +131,101 @@
     if (weather.swing >= BIG_SWING && outer) score += 1.5;
     if (weather.rainProb >= RAIN_PROB) {
       if (shoes && shoes.type === 'rainboots') score += 3;
-      if (shoes && ['white', 'ivory', 'beige'].includes(shoes.color)) score -= 3;
-      if (outer && outer.type === 'suede') score -= 6;
+      if (shoes && ['white', 'ivory', 'beige'].includes(shoes.color)) {
+        score -= 3;
+        issues.push({ kind: 'rain', text: '비 예보가 있는 날 밝은색 신발' });
+      }
+      if (outer && outer.type === 'suede') {
+        score -= 6;
+        issues.push({ kind: 'rain', text: '비 예보가 있는 날 스웨이드 자켓' });
+      }
     } else if (shoes && shoes.type === 'rainboots') score -= 6;
     if (weather.wind >= 30 && outer && outer.type === 'windbreaker') score += 1;
 
-    // 최근 3일 안에 입은 옷은 순위를 낮춘다
-    for (const part of parts) {
-      if (part.lastWorn && daysBetween(part.lastWorn, today) <= 3 && part.cat !== 'shoes') score -= 1.5;
+    // 아래는 추천 순위에만 쓰고, 입은 코디를 평가할 때는 쓰지 않는다
+    if (!ctx.evaluating) {
+      // 최근 3일 안에 입은 옷은 순위를 낮춘다
+      for (const part of parts) {
+        if (part.lastWorn && daysBetween(part.lastWorn, today) <= 3 && part.cat !== 'shoes') score -= 1.5;
+      }
+
+      // 좋아요/싫어요
+      const fb = feedback && feedback[`${top.id}|${bottom.id}`];
+      if (fb) score += fb > 0 ? 2 : -8;
+
+      // 직접 입고 남긴 선호
+      const prefs = ctx.prefs;
+      if (prefs) {
+        const pair = prefs.pairs[`${top.id}|${bottom.id}`];
+        if (pair) {
+          score += pair.delta;
+          if (pair.delta > 0) reasons.push({ text: pair.guideOk ? '직접 입고 선호한 조합 (채널 가이드와도 부합)' : '직접 입고 선호한 조합' });
+        }
+        score += prefs.colors[`${top.color}|${bottom.color}`] || 0;
+      }
     }
 
-    // 좋아요/싫어요
-    const fb = feedback && feedback[`${top.id}|${bottom.id}`];
-    if (fb) score += fb > 0 ? 2 : -8;
+    return { score, reasons, issues };
+  }
 
-    return { score, reasons };
+  const v = (id) => ({ url: `https://www.youtube.com/shorts/${id}` });
+
+  // 권장 기온에서 벗어난 정도를 문장으로 만든다
+  function tempIssue(item, role, t) {
+    const rule = R.temp[item.type];
+    const range = rule && (rule[role] || rule.wear);
+    if (!range || (t >= range[0] && t <= range[1])) return null;
+    const hot = t > range[1];
+    const far = hot ? t - range[1] > MARGIN : range[0] - t > MARGIN;
+    const where = role === 'solo' ? ' 단독' : role === 'inner' ? ' (아우터 안)' : '';
+    return {
+      kind: 'temp', level: far ? 2 : 1, src: R.src.temp,
+      text: `체감 ${t}℃에 ${C.type[item.type].name}${where}: ${far ? '' : '조금 '}${hot ? '더울' : '추울'} 수 있음 (권장 ${Math.max(range[0], -10)}~${Math.min(range[1], 35)}℃)`,
+    };
+  }
+
+  // 실제로 입은 조합을 채널 가이드로 평가한다. parts: { top, bottom, outer?, shoes? }
+  function evaluate(parts, ctx) {
+    const { top, bottom, outer, shoes } = parts;
+    const t = ctx.weather && ctx.weather.feel != null ? ctx.weather.feel : null;
+    const weather = ctx.weather || { feel: null, swing: 0, rainProb: 0, wind: 0 };
+    const tempIssues = [];
+    if (t != null) {
+      const checks = [[top, outer ? 'inner' : 'solo'], [outer, 'wear'], [bottom, 'wear'], [shoes, 'wear']];
+      for (const [item, role] of checks) {
+        const issue = item && tempIssue(item, role, t);
+        if (issue) tempIssues.push(issue);
+      }
+      const need = R.temp[top.type] && R.temp[top.type].solo;
+      if (!outer && need && t < need[0] - MARGIN) {
+        tempIssues[tempIssues.length - 1].text += ' — 겉옷을 걸치면 맞습니다';
+      }
+    }
+    const combo = { top, bottom, outer: outer || null, shoes: shoes || null };
+    const result = scoreCombo(combo, { ...ctx, weather, evaluating: true });
+    const score = result.score - tempIssues.reduce((sum, i) => sum + 2 * i.level, 0);
+    const issues = result.issues.concat(tempIssues);
+    const guideOk = result.reasons.length > 0 && !issues.some((i) => i.kind === 'color' || i.kind === 'formal');
+    return { score, reasons: result.reasons, issues, guideOk };
+  }
+
+  // 한 벌만 바꿔서 더 나아지는 경우를 찾는다
+  function suggestSwaps(parts, ctx, items) {
+    const base = evaluate(parts, ctx);
+    const out = [];
+    for (const role of ['top', 'outer', 'bottom', 'shoes']) {
+      const current = parts[role];
+      if (!current) continue;
+      let best = null;
+      for (const item of items) {
+        if (item.cat !== current.cat || item.id === current.id || item.status === 'store') continue;
+        const next = evaluate({ ...parts, [role]: item }, ctx);
+        if (next.issues.some((i) => i.kind === 'temp' && i.level === 2)) continue;
+        if (!best || next.score > best.score) best = { item, score: next.score };
+      }
+      if (best && best.score - base.score >= 3) out.push({ role, from: current, to: best.item, gain: best.score - base.score });
+    }
+    return out.sort((a, b) => b.gain - a.gain).slice(0, 2);
   }
 
   function daysBetween(a, b) {
@@ -264,5 +360,5 @@
     return R.bands.find((b) => t >= b.min && t <= b.max) || R.bands[R.bands.length - 1];
   }
 
-  root.CODI_ENGINE = { recommend, shoppingAdvice, seasonCheck, bandOf, RAIN_PROB, BIG_SWING };
+  root.CODI_ENGINE = { recommend, shoppingAdvice, seasonCheck, bandOf, evaluate, suggestSwaps, RAIN_PROB, BIG_SWING };
 })(typeof window !== 'undefined' ? window : globalThis);

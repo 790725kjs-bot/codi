@@ -85,27 +85,33 @@
       const st = loadState();
       let pulled = 0, pushed = 0;
 
-      onProgress('보관소 확인 중');
-      const [metaList, photoList] = await Promise.all([gh.list('items'), gh.list('photos')]);
+      // 옷장과 착용 기록을 차례로 맞춘다. 착용 기록은 kind 가 'worn' 인 것만 다룬다.
+      const collections = [
+        { store: 'items', dir: 'items', photoDir: 'photos', keep: (i) => !i.id.startsWith('demo'), what: '옷' },
+        { store: 'log', dir: 'worn', photoDir: 'wornphotos', keep: (i) => i.kind === 'worn', what: '착용 기록' },
+      ];
+      for (const { store, dir, photoDir, keep, what } of collections) {
+      onProgress(`${what} 확인 중`);
+      const [metaList, photoList] = await Promise.all([gh.list(dir), gh.list(photoDir)]);
       const remote = new Map(metaList.filter((f) => f.name.endsWith('.json')).map((f) => [f.name.slice(0, -5), f.sha]));
       const remotePhotos = new Set(photoList.map((f) => f.name.replace(/\.jpg$/, '')));
       // 미리 보기용 예시 옷(#demo)은 보관소에 올리지 않는다
-      const local = new Map((await DB.all('items')).filter((i) => !i.id.startsWith('demo')).map((i) => [i.id, i]));
+      const local = new Map((await DB.all(store)).filter(keep).map((i) => [i.id, i]));
 
       // 1) 다른 기기에서 바뀐 옷 받기
       const changed = [...remote].filter(([id, sha]) => st.sha[id] !== sha);
       for (let n = 0; n < changed.length; n++) {
         const [id, sha] = changed[n];
-        onProgress(`받는 중 ${n + 1}/${changed.length}`);
-        const file = await gh.json(`items/${id}.json`);
+        onProgress(`${what} 받는 중 ${n + 1}/${changed.length}`);
+        const file = await gh.json(`${dir}/${id}.json`);
         if (!file) continue;
         const r = file.value, l = local.get(id);
         if (!l || (r.updated || 0) > (l.updated || 0)) {
           let photo = null;
-          if (!r.deleted && r.hasPhoto) photo = (l && l.photo) || await gh.blob(`photos/${id}.jpg`);
+          if (!r.deleted && r.hasPhoto) photo = (l && l.photo) || await gh.blob(`${photoDir}/${id}.jpg`);
           const { hasPhoto, ...item } = r;
           const merged = { ...item, photo };
-          await DB.put('items', merged);
+          await DB.put(store, merged);
           local.set(id, merged);
           st.pushed[id] = r.updated || 0;
           pulled++;
@@ -120,20 +126,21 @@
       const dirty = [...local.values()].filter((i) => !remote.has(i.id) || st.pushed[i.id] !== (i.updated || 0));
       for (let n = 0; n < dirty.length; n++) {
         const item = dirty[n];
-        onProgress(`올리는 중 ${n + 1}/${dirty.length}`);
+        onProgress(`${what} 올리는 중 ${n + 1}/${dirty.length}`);
         if (item.photo && !item.deleted && !remotePhotos.has(item.id)) {
-          await gh.put(`photos/${item.id}.jpg`, await blobToBase64(item.photo));
+          await gh.put(`${photoDir}/${item.id}.jpg`, await blobToBase64(item.photo));
         }
         const { photo, ...meta } = item;
         meta.hasPhoto = !!photo;
         meta.updated = item.updated || 0;
-        const sha = await gh.put(`items/${item.id}.json`, utf8ToBase64(JSON.stringify(meta)), st.sha[item.id] || remote.get(item.id));
+        const sha = await gh.put(`${dir}/${item.id}.json`, utf8ToBase64(JSON.stringify(meta)), st.sha[item.id] || remote.get(item.id));
         if (sha) {
           st.sha[item.id] = sha;
           st.pushed[item.id] = meta.updated;
           saveState(st);
           pushed++;
         }
+      }
       }
 
       // 3) 내 정보와 좋아요/싫어요
