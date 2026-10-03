@@ -1,5 +1,5 @@
 (function () {
-  const C = window.CODI_CATALOG, R = window.CODI_RULES, CH = window.CODI_CHANNEL;
+  const C = window.CODI_CATALOG, R = window.CODI_RULES, CH = window.CODI_CHANNEL, BASICS = window.CODI_BASICS;
   const E = window.CODI_ENGINE;
   const { DB, loadSettings, saveSettings, exportAll, importAll } = window.CODI_DB;
   const SYNC = window.CODI_SYNC;
@@ -14,7 +14,7 @@
   const DAY_NAMES = ['오늘', '내일', '모레'];
 
   const state = {
-    tab: 'today', theme: 'out', day: 0,
+    tab: 'today', theme: 'out', day: 0, shopView: 'advice',
     items: [], settings: loadSettings(), forecast: null, weatherError: null,
     closetCat: 'all', closetStatus: 'all',
   };
@@ -424,7 +424,40 @@
     return Math.floor((new Date(today()) - new Date(date)) / 864e5);
   }
 
+  const won = (n) => `${Number(n).toLocaleString('ko-KR')}원`;
+
+  function shopSeg() {
+    return `<div class="seg">${[['advice', '부족한 옷 · 특가'], ['basics', '30~40대 기본템']].map(([id, name]) =>
+      `<button data-shop="${id}" class="${state.shopView === id ? 'on' : ''}">${name}</button>`).join('')}</div>`;
+  }
+
+  function productCard(p) {
+    const off = p.normal > p.price ? Math.round((1 - p.price / p.normal) * 100) : 0;
+    return `<a class="product" href="${esc(p.url)}" target="_blank" rel="noopener">
+      <img class="thumb" loading="lazy" src="${esc(p.img)}" alt="">
+      <span class="brand">${esc(p.brand)}${p.soldOut ? ' <span class="tag">품절</span>' : ''}</span>
+      <span class="pname">${esc(p.name)}</span>
+      <span class="price">${off ? `<b>${off}%</b> ` : ''}${won(p.price)}</span></a>`;
+  }
+
+  // 채널이 무신사에 만들어 둔 "30대 중반~40대 이상 기본템" 목록을 항목별로 보여준다
+  function renderBasics() {
+    if (!BASICS) { view.innerHTML = `${shopSeg()}<section class="card empty">기본템 목록을 아직 받지 못했습니다.</section>`; return; }
+    const item = (it) => `<div class="basic"><h3>${esc(it.name)} <span class="muted small">${it.products.length ? `${it.products.length}개` : ''}</span></h3>
+      ${it.products.length ? `<div class="products">${it.products.map(productCard).join('')}</div>`
+    : '<p class="small muted">현재 목록에 해당 상품이 없습니다.</p>'}</div>`;
+    view.innerHTML = `${shopSeg()}
+      <section class="card"><h2>${esc(BASICS.title)}</h2>
+        <p class="small muted">채널 운영자가 무신사에 정리한 상품 ${BASICS.count}개입니다 (${BASICS.updated} 기준). 줄마다 비슷한 역할의 상품이니 마음에 드는 것 하나씩만 갖추면 됩니다.
+          상품을 누르면 무신사 구매 화면으로 이동합니다. 가격과 품절 여부는 수시로 바뀝니다.</p>
+        <p class="small" style="margin-top:6px"><a href="${BASICS.listUrl}" target="_blank" rel="noopener">무신사에서 전체 목록 보기</a> ·
+          <a href="${BASICS.guideUrl}" target="_blank" rel="noopener">채널의 안내 글</a></p></section>
+      ${BASICS.groups.map((g) => `<section class="card"><h2>${g.rank}순위 · ${esc(g.part)}</h2>${g.items.map(item).join('')}</section>`).join('')}
+      ${BASICS.extra.length ? `<section class="card"><h2>순위표 밖의 추가 상품</h2>${BASICS.extra.map(item).join('')}</section>` : ''}`;
+  }
+
   function renderShop() {
+    if (state.shopView === 'basics') { renderBasics(); return; }
     const w = currentWeather() || { feel: 15, swing: 0, rainProb: 0, wind: 0 };
     const themes = C.THEMES.map((t) => t.id);
     const ctx = context('out', w);
@@ -451,7 +484,7 @@
         <div class="small muted">${d.date} · ${age <= 14 ? '<span class="tag new">최근</span>' : '<span class="tag">종료됐을 수 있음</span>'}</div></li>`;
     }).join('');
 
-    view.innerHTML = `
+    view.innerHTML = `${shopSeg()}
       <section class="card"><h2>지금 사면 좋은 것</h2>
         <p class="small muted" style="margin-bottom:10px">${short.length
     ? `${short.map(themeName).join(', ')} 조합이 부족합니다 (기준: 체감 ${w.feel}℃).`
@@ -534,6 +567,7 @@
     const d = t.dataset;
     if (d.theme) { state.theme = d.theme; render(); }
     else if (d.day) { state.day = Number(d.day); render(); }
+    else if (d.shop) { state.shopView = d.shop; render(); window.scrollTo(0, 0); }
     else if (d.go) { state.tab = d.go; render(); window.scrollTo(0, 0); }
     else if (d.cat) { state.closetCat = d.cat; render(); }
     else if (d.status) { state.closetStatus = d.status; render(); }
