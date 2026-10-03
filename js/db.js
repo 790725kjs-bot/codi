@@ -40,6 +40,7 @@
     profile: { height: 175, weight: 70, age: 35, skin: 'tan', style: 'both' },
     place: { name: '서울', lat: 37.5665, lon: 126.978 },
     feedback: {},
+    sync: { token: '', repo: '790725kjs-bot/codi-data' },
   };
 
   function loadSettings() {
@@ -49,6 +50,7 @@
         ...DEFAULT_SETTINGS, ...saved,
         profile: { ...DEFAULT_SETTINGS.profile, ...saved.profile },
         place: { ...DEFAULT_SETTINGS.place, ...saved.place },
+        sync: { ...DEFAULT_SETTINGS.sync, ...saved.sync },
       };
     } catch (e) {
       return structuredClone(DEFAULT_SETTINGS);
@@ -70,7 +72,9 @@
     for (const item of items) {
       if (item.photo instanceof Blob) item.photo = await blobToDataUrl(item.photo);
     }
-    return { version: 1, exported: new Date().toISOString(), settings: loadSettings(), items, log: await DB.all('log') };
+    const settings = loadSettings();
+    settings.sync = { ...settings.sync, token: '' }; // 연결 키는 백업 파일에 넣지 않는다
+    return { version: 1, exported: new Date().toISOString(), settings, items: items.filter((i) => !i.deleted), log: await DB.all('log') };
   }
 
   async function importAll(data) {
@@ -79,10 +83,11 @@
     await DB.clear('log');
     for (const item of data.items) {
       if (typeof item.photo === 'string') item.photo = await (await fetch(item.photo)).blob();
+      item.updated = Date.now(); // 복원한 옷은 방금 바뀐 것으로 보고 다른 기기에도 전한다
       await DB.put('items', item);
     }
     for (const entry of data.log || []) await DB.put('log', entry);
-    if (data.settings) saveSettings(data.settings);
+    if (data.settings) saveSettings({ ...data.settings, sync: loadSettings().sync, updated: Date.now() });
   }
 
   root.CODI_DB = { DB, loadSettings, saveSettings, exportAll, importAll };

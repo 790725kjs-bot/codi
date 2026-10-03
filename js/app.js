@@ -2,6 +2,7 @@
   const C = window.CODI_CATALOG, R = window.CODI_RULES, CH = window.CODI_CHANNEL;
   const E = window.CODI_ENGINE;
   const { DB, loadSettings, saveSettings, exportAll, importAll } = window.CODI_DB;
+  const SYNC = window.CODI_SYNC;
 
   const $ = (sel, el = document) => el.querySelector(sel);
   const view = $('#view'), sheet = $('#sheet');
@@ -50,14 +51,51 @@
     return `<div class="thumb" style="background:${hex};color:${inkOn(hex)}">${esc(C.type[item.type].name)}</div>`;
   }
 
+  // 삭제한 옷은 다른 기기에도 삭제가 전해지도록 표시만 남기고 화면에서 숨긴다
   async function reloadItems() {
-    state.items = await DB.all('items');
+    state.items = (await DB.all('items')).filter((i) => !i.deleted);
   }
 
   async function saveItem(item) {
-    await DB.put('items', item);
+    await DB.put('items', { ...item, updated: Date.now() });
     photoUrls.delete(item.id);
     await reloadItems();
+    queueSync();
+  }
+
+  function saveShared() {
+    state.settings.updated = Date.now();
+    saveSettings(state.settings);
+    queueSync();
+  }
+
+  // ---------- 기기 간 동기화 ----------
+  let syncTimer;
+  function queueSync(delay = 3000) {
+    if (!state.settings.sync.token) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => runSync(false), delay);
+  }
+
+  async function runSync(announce) {
+    if (!state.settings.sync.token) return;
+    const sub = $('#subtitle');
+    try {
+      const result = await SYNC.sync((msg) => { sub.textContent = `동기화: ${msg}`; });
+      state.syncError = null;
+      if (result && result.pulled) {
+        state.settings = loadSettings();
+        photoUrls.clear();
+        await reloadItems();
+      }
+      if (announce && result) toast(`동기화 완료 (받음 ${result.pulled}, 올림 ${result.pushed})`);
+      if (!sheet.open && (announce || (result && result.pulled))) render();
+    } catch (e) {
+      state.syncError = e.message;
+      if (announce) toast(`동기화 실패: ${e.message}`);
+      if (!sheet.open && state.tab === 'settings') render();
+    }
+    sub.textContent = SUB[state.tab];
   }
 
   // ---------- 날씨 ----------
@@ -323,7 +361,11 @@
     const result = await itemForm(item, false);
     sheet.close();
     if (result === 'save') await saveItem(item);
-    if (result === 'delete') { await DB.remove('items', id); await reloadItems(); }
+    if (result === 'delete') {
+      await DB.put('items', { id, deleted: true, updated: Date.now() });
+      await reloadItems();
+      queueSync();
+    }
     render();
   }
 
@@ -367,7 +409,8 @@
     form.onsubmit = async (e) => {
       e.preventDefault();
       const wash = new Set([...form.querySelectorAll('[name=wash]:checked')].map((x) => x.value));
-      for (const p of parts) await DB.put('items', { ...p, lastWorn: today(), status: wash.has(p.id) ? 'wash' : p.status });
+      for (const p of parts) await DB.put('items', { ...p, lastWorn: today(), status: wash.has(p.id) ? 'wash' : p.status, updated: Date.now() });
+      queueSync();
       await DB.put('log', { id: `${today()}-${state.theme}`, date: today(), theme: state.theme, items: ids });
       await reloadItems();
       sheet.close();
@@ -432,7 +475,7 @@
 
   // ---------- 설정 ----------
   function renderSettings() {
-    const p = state.settings.profile;
+    const p = state.settings.profile, sync = state.settings.sync;
     const opt = (list, cur) => list.map(([v, n]) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${n}</option>`).join('');
     view.innerHTML = `
       <section class="card"><h2>내 정보</h2>
@@ -447,6 +490,19 @@
       <section class="card"><h2>날씨 지역</h2>
         <p class="small muted">${esc(state.settings.place.name)} (위도 ${state.settings.place.lat}, 경도 ${state.settings.place.lon}) · Open-Meteo 예보, 어플을 열 때마다 자동 갱신</p>
         <div class="actions"><button class="btn" data-act="reload">지금 날씨 새로 받기</button></div></section>
+      <section class="card"><h2>기기 간 동기화</h2>
+        <p class="small muted">${sync.token
+    ? `연결됨 · 마지막 동기화 ${SYNC.lastSynced() ? new Date(SYNC.lastSynced()).toLocaleString('ko-KR') : '아직 없음'}`
+    : '연결하면 휴대폰, 탭, PC가 같은 옷장을 씁니다. 옷장은 본인 GitHub의 비공개 저장소에 보관됩니다.'}</p>
+        ${state.syncError ? `<div class="banner" style="margin-top:8px">${esc(state.syncError)}</div>` : ''}
+        <form class="form" id="syncForm" style="margin-top:10px">
+          <label>연결 키 (GitHub 토큰)<input type="text" name="token" autocomplete="off" autocapitalize="off" spellcheck="false"
+            placeholder="github_pat_..." value="${sync.token ? '••••••••' + esc(sync.token.slice(-4)) : ''}"></label>
+          <label>보관소 저장소<input type="text" name="repo" autocapitalize="off" spellcheck="false" value="${esc(sync.repo)}"></label>
+          <div class="actions"><button class="btn primary grow">${sync.token ? '지금 동기화' : '연결하고 동기화'}</button>
+            ${sync.token ? '<button type="button" class="btn" data-act="synclink">다른 기기용 링크 복사</button>' : ''}</div>
+          ${sync.token ? '<button type="button" class="btn danger" data-act="syncoff">이 기기 연결 끊기</button>' : ''}
+        </form></section>
       <section class="card"><h2>백업</h2>
         <p class="small muted">옷장과 사진은 이 기기에만 저장됩니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 백업 파일을 받아 두세요.</p>
         <div class="actions"><button class="btn" data-act="export">백업 파일 받기</button>
@@ -485,7 +541,7 @@
     else if (d.wear) { wear(d.wear.split(',')); }
     else if (d.fb) {
       state.settings.feedback[d.pair] = Number(d.fb);
-      saveSettings(state.settings);
+      saveShared();
       toast(d.fb === '1' ? '이 조합을 더 자주 추천합니다' : '이 조합은 추천하지 않습니다');
       render();
     } else if (d.act === 'add') {
@@ -499,6 +555,18 @@
       state.manualTemp = null;
       await loadWeather(true);
       toast(state.weatherError || '날씨를 새로 받았습니다');
+      render();
+    } else if (d.act === 'synclink') {
+      // 집 안 임시 주소(http)에서 눌러도 정식 주소로 연결되는 링크를 만든다
+      const home = location.protocol === 'https:' ? `${location.origin}${location.pathname}` : 'https://790725kjs-bot.github.io/codi/';
+      const link = `${home}#sync=${encodeURIComponent(state.settings.sync.token)}`;
+      try { await navigator.clipboard.writeText(link); toast('링크를 복사했습니다. 다른 기기에서 열면 바로 연결됩니다'); }
+      catch (err) { prompt('이 링크를 다른 기기에서 여세요', link); }
+    } else if (d.act === 'syncoff') {
+      if (!confirm('이 기기의 연결만 끊습니다. 옷장은 이 기기와 보관소에 그대로 남습니다.')) return;
+      state.settings.sync.token = '';
+      saveSettings(state.settings);
+      SYNC.reset();
       render();
     } else if (d.act === 'export') {
       const blob = new Blob([JSON.stringify(await exportAll())], { type: 'application/json' });
@@ -519,6 +587,17 @@
   });
 
   view.addEventListener('submit', (e) => {
+    if (e.target.id === 'syncForm') {
+      e.preventDefault();
+      const token = e.target.token.value.trim(), repo = e.target.repo.value.trim();
+      if (token && !token.startsWith('•')) { state.settings.sync.token = token; SYNC.reset(); }
+      if (repo && repo !== state.settings.sync.repo) { state.settings.sync.repo = repo; SYNC.reset(); }
+      if (!state.settings.sync.token) { toast('연결 키를 입력해 주세요'); return; }
+      saveSettings(state.settings);
+      toast('동기화를 시작합니다');
+      runSync(true);
+      return;
+    }
     if (e.target.id !== 'profileForm') return;
     e.preventDefault();
     const f = e.target;
@@ -526,13 +605,20 @@
       height: Number(f.height.value), weight: Number(f.weight.value), age: Number(f.age.value),
       skin: f.skin.value, style: f.style.value,
     });
-    saveSettings(state.settings);
+    saveShared();
     toast('저장했습니다');
   });
 
   sheet.addEventListener('cancel', (e) => e.preventDefault());
 
   async function start() {
+    // 다른 기기에서 복사한 연결 링크(#sync=키)로 열면 바로 연결한다
+    const linked = location.hash.match(/^#sync=(.+)$/);
+    if (linked) {
+      state.settings.sync.token = decodeURIComponent(linked[1]);
+      saveSettings(state.settings);
+      history.replaceState(null, '', location.pathname);
+    }
     await reloadItems();
     // 테스트용: 주소 끝에 #demo 를 붙이면 예시 옷장으로 채운다 (옷장이 비어 있을 때만)
     if (location.hash === '#demo' && !state.items.length && window.CODI_DEMO) {
@@ -542,6 +628,10 @@
     render();
     await loadWeather(false);
     render();
+    runSync(!!linked);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && Date.now() - SYNC.lastSynced() > 60000) runSync(false);
+    });
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
   }
   start();
