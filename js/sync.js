@@ -72,6 +72,9 @@
     };
   }
 
+  // 사진을 바꾸면 photoRev 가 바뀌고, 새 이름으로 올려 다른 기기가 다시 받게 한다
+  const photoName = (x) => (x.photoRev ? `${x.id}-${x.photoRev}` : x.id);
+
   let running = false, again = false;
 
   // 반환: { pulled, pushed } 받은 수와 올린 수
@@ -108,7 +111,7 @@
         const r = file.value, l = local.get(id);
         if (!l || (r.updated || 0) > (l.updated || 0)) {
           let photo = null;
-          if (!r.deleted && r.hasPhoto) photo = (l && l.photo) || await gh.blob(`${photoDir}/${id}.jpg`);
+          if (!r.deleted && r.hasPhoto) photo = (l && l.photo && (l.photoRev || 0) === (r.photoRev || 0)) ? l.photo : await gh.blob(`${photoDir}/${photoName(r)}.jpg`);
           const { hasPhoto, ...item } = r;
           const merged = { ...item, photo };
           await DB.put(store, merged);
@@ -127,8 +130,8 @@
       for (let n = 0; n < dirty.length; n++) {
         const item = dirty[n];
         onProgress(`${what} 올리는 중 ${n + 1}/${dirty.length}`);
-        if (item.photo && !item.deleted && !remotePhotos.has(item.id)) {
-          await gh.put(`${photoDir}/${item.id}.jpg`, await blobToBase64(item.photo));
+        if (item.photo && !item.deleted && !remotePhotos.has(photoName(item))) {
+          await gh.put(`${photoDir}/${photoName(item)}.jpg`, await blobToBase64(item.photo));
         }
         const { photo, ...meta } = item;
         meta.hasPhoto = !!photo;

@@ -277,7 +277,9 @@
     const url = photoUrl(item);
     sheet.innerHTML = `<form class="form" method="dialog" id="itemForm">
       <div class="row between"><h2>${isNew ? '옷 등록' : '옷 수정'}</h2><span class="muted small">${esc(queueNote || '')}</span></div>
-      ${url ? `<img class="thumb preview" src="${url}" alt="">` : ''}
+      <div class="row">${url ? `<img class="thumb preview" src="${url}" alt="">` : ''}
+        ${isNew ? '' : `<button type="button" class="btn" data-act="photo">${url ? '사진 바꾸기' : '사진 추가'}</button>
+        <input id="itemFile" type="file" accept="image/*" hidden>`}</div>
       <label>분류<select name="cat">${C.CATS.map((c) => `<option value="${c.id}" ${c.id === item.cat ? 'selected' : ''}>${c.name}</option>`).join('')}</select></label>
       <label>종류<select name="type">${types.map((t) => `<option value="${t.id}" ${t.id === item.type ? 'selected' : ''}>${t.name}</option>`).join('')}</select></label>
       <label>색상 <span id="colorName">${C.color[item.color].name}${isNew && url ? ' (사진에서 추정, 틀리면 고쳐 주세요)' : ''}</span>
@@ -318,6 +320,22 @@
           $('#colorName').textContent = C.color[item.color].name;
         }
         const act = e.target.dataset.act;
+        if (act === 'photo') {
+          const input = $('#itemFile');
+          input.onchange = async () => {
+            if (!input.files[0]) return;
+            readForm();
+            item.type = form.type.value;
+            try {
+              // 사진만 바꾼다. 색은 이미 정해 둔 값을 유지한다.
+              item.photo = (await shrinkPhoto(input.files[0])).blob;
+              item.photoRev = Date.now();
+              photoUrls.delete(item.id);
+              resolve(itemForm(item, isNew, queueNote));
+            } catch (err) { toast('읽을 수 없는 사진입니다'); }
+          };
+          input.click();
+        }
         if (act === 'cancel') resolve(null);
         if (act === 'delete' && confirm('이 옷을 옷장에서 삭제할까요?')) resolve('delete');
       };
@@ -362,6 +380,7 @@
     const result = await itemForm(item, false);
     sheet.close();
     if (result === 'save') await saveItem(item);
+    else photoUrls.delete(id); // 저장하지 않은 새 사진 미리보기를 버린다
     if (result === 'delete') {
       await DB.put('items', { id, deleted: true, updated: Date.now() });
       await reloadItems();

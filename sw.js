@@ -1,5 +1,5 @@
 // 온라인이면 항상 최신 파일을 받고, 오프라인이면 마지막으로 받은 파일로 연다.
-const CACHE = 'codi-shell-v4';
+const CACHE = 'codi-shell-v5';
 const SHELL = [
   './', 'index.html', 'styles.css', 'manifest.webmanifest',
   'data/catalog.js', 'data/rules.js', 'data/channel.js', 'data/basics.js', 'data/demo.js',
