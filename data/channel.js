@@ -1,7 +1,7 @@
 // tools/build_channel_data.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_CHANNEL = {
- "updated": "2026-10-03",
- "count": 323,
+ "updated": "2026-10-04",
+ "count": 324,
  "deals": [
   {
    "id": "PwK8bLoPZmE",

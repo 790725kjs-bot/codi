@@ -1,6 +1,6 @@
 // tools/build_basics.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_BASICS = {
- "updated": "2026-10-03",
+ "updated": "2026-10-04",
  "title": "기본템 총정리 : 30대 중반~40대 이상",
  "listUrl": "https://www.musinsa.com/curator/shop/dqugUZ?curationId=01KVQSM6MFV290MVY7NGCVF1R3",
  "guideUrl": "https://buttered-umbra-df5.notion.site/2026-3-0-388bbedf246a80c69a7cd7aeff8a2498",
@@ -155,7 +155,7 @@ window.CODI_BASICS = {
        "name": "10.6 oz Cotton Short Sleeve Henley Tee Dark Grey",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20230428/3269419/3269419_17761451609521_500.jpg",
        "url": "https://www.musinsa.com/products/3269419?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=Xu6JUw1aM",
-       "price": 42930,
+       "price": 37100,
        "normal": 53000,
        "soldOut": false
       },
@@ -164,7 +164,7 @@ window.CODI_BASICS = {
        "name": "10.6 oz Cotton Short Sleeve Henley Tee Black",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20260121/5922490/5922490_17761452585244_500.jpg",
        "url": "https://www.musinsa.com/products/5922490?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XD2A8LGCZ",
-       "price": 42930,
+       "price": 37100,
        "normal": 53000,
        "soldOut": false
       },
@@ -196,7 +196,7 @@ window.CODI_BASICS = {
        "name": "워셔블 케이블 반팔 니트 - 16 COLOR",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20240306/3927583/3927583_17791544001352_500.jpg",
        "url": "https://www.musinsa.com/products/3927583?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XUsiemi6W",
-       "price": 23600,
+       "price": 29500,
        "normal": 59000,
        "soldOut": false
       }
@@ -251,7 +251,7 @@ window.CODI_BASICS = {
        "name": "WESTERN DENIM HALF SHIRT [MID BLUE]",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20260609/6637668/6637668_17854628607430_500.jpg",
        "url": "https://www.musinsa.com/products/6637668?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XYCN656KZ",
-       "price": 83300,
+       "price": 74970,
        "normal": 98000,
        "soldOut": false
       },
@@ -389,7 +389,7 @@ window.CODI_BASICS = {
        "name": "1968 HIMALAYA JEANS [WIDE STRAIGHT]",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20200819/1555407/1555407_17817662788724_500.jpg",
        "url": "https://www.musinsa.com/products/1555407?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XRyqv5Sxg",
-       "price": 83300,
+       "price": 74970,
        "normal": 98000,
        "soldOut": false
       },
@@ -453,7 +453,7 @@ window.CODI_BASICS = {
        "name": "DENIM BERMUDA SHORTS [BLACK]",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20250421/5045936/5045936_17476193605456_500.jpg",
        "url": "https://www.musinsa.com/products/5045936?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XZXSKBaOX",
-       "price": 54600,
+       "price": 49140,
        "normal": 78000,
        "soldOut": false
       },
@@ -689,7 +689,7 @@ window.CODI_BASICS = {
        "name": "코튼 헨리넥 워셔블 니트 - 6 COLOR",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20250516/5119025/5119025_17508193690665_500.jpg",
        "url": "https://www.musinsa.com/products/5119025?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XO0Acn1zu",
-       "price": 25000,
+       "price": 29900,
        "normal": 49000,
        "soldOut": false
       },
@@ -707,7 +707,7 @@ window.CODI_BASICS = {
        "name": "Henley-Neck Short Sleeve Knit - 4color",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20260408/6276873/6276873_17769491825579_500.jpg",
        "url": "https://www.musinsa.com/products/6276873?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XFHZQDA31",
-       "price": 49770,
+       "price": 53820,
        "normal": 79000,
        "soldOut": false
       },
@@ -716,7 +716,7 @@ window.CODI_BASICS = {
        "name": "HARD TWIST HENLEY-NECK HALF KNIT [GRAPHITE]",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20250417/5036539/5036539_17768377459685_500.jpg",
        "url": "https://www.musinsa.com/products/5036539?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XvGAT5LmO",
-       "price": 63200,
+       "price": 56880,
        "normal": 79000,
        "soldOut": false
       }
@@ -736,7 +736,7 @@ window.CODI_BASICS = {
        "name": "린넨 라이크 세미 와이드 밴딩 팬츠 - 10 COLOR",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20210428/1924274/1924274_17152551704806_500.jpg",
        "url": "https://www.musinsa.com/products/1924274?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=X8Ez6S0op",
-       "price": 26600,
+       "price": 29900,
        "normal": 33000,
        "soldOut": false
       }
@@ -988,7 +988,7 @@ window.CODI_BASICS = {
        "name": "DENIM BERMUDA SHORTS [BLUE]",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20240715/4248998/4248998_17210197688302_500.jpg",
        "url": "https://www.musinsa.com/products/4248998?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XxfXuf5pW",
-       "price": 54600,
+       "price": 49140,
        "normal": 78000,
        "soldOut": false
       },
@@ -997,7 +997,7 @@ window.CODI_BASICS = {
        "name": "DENIM SWEAT CARPENTER SHORTS [INDIGO]",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20260609/6637953/6637953_17833140372382_500.jpg",
        "url": "https://www.musinsa.com/products/6637953?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XS3H88G7Q",
-       "price": 57800,
+       "price": 52020,
        "normal": 68000,
        "soldOut": false
       },
@@ -1085,7 +1085,7 @@ window.CODI_BASICS = {
      "name": "더블 니트 원 턱 와이드 라운지 스웨트 팬츠 [미디엄 그레이]",
      "img": "https://image.msscdn.net/thumbnails/images/goods_img/20251218/5838000/5838000_17689722197592_500.jpg",
      "url": "https://www.musinsa.com/products/5838000?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=X8BJ6rGY6",
-     "price": 32090,
+     "price": 43590,
      "normal": 45900,
      "soldOut": false
     },
@@ -1117,7 +1117,7 @@ window.CODI_BASICS = {
      "name": "포 시즌 첼시 레인부츠 R23M501 (블랙)",
      "img": "https://image.msscdn.net/thumbnails/images/goods_img/20231108/3694945/3694945_16994115794473_500.jpg",
      "url": "https://www.musinsa.com/products/3694945?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=Xj8gtcU5S",
-     "price": 65800,
+     "price": 79000,
      "normal": 132000,
      "soldOut": false
     }
