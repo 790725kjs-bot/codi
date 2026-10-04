@@ -16,7 +16,7 @@
   const state = {
     tab: 'today', theme: 'out', day: 0, shopView: 'advice', worn: [], wornOpen: null, prefs: { pairs: {}, colors: {} },
     items: [], settings: loadSettings(), forecast: null, weatherError: null,
-    closetCat: 'all', closetStatus: 'all',
+    closetCat: 'all', closetStatus: 'all', closetOpen: new Set(), closetAll: localStorage.getItem('codi-closet-all') === '1',
   };
   const photoUrls = new Map();
 
@@ -239,18 +239,28 @@
       .sort((a, b) => order(C.TYPES, a.type) - order(C.TYPES, b.type) || order(C.COLORS, a.color) - order(C.COLORS, b.color)
         || itemLabel(a).localeCompare(itemLabel(b), 'ko'));
     const count = (cat) => state.items.filter((i) => cat === 'all' || i.cat === cat).length;
-    const card = (i) => `<button class="piece item" data-item="${i.id}">
+    // 사진 오른쪽 아래의 ＋ 는 크게 보기, 사진 자체를 누르면 수정
+    const card = (i) => `<div class="item"><button class="piece" data-item="${i.id}">
         ${thumb(i)}${i.status !== 'ok' ? `<span class="badge">${STATUS[i.status]}</span>` : ''}
-        <span class="cap">${esc(itemLabel(i))}</span></button>`;
-    // 분류마다 제목을 달고, 그 안에서는 종류(반팔티, 셔츠 등)별로 작은 제목을 단다
+        <span class="cap">${esc(itemLabel(i))}</span></button>
+        ${i.photo ? `<button class="zoom" data-zoom="${i.id}" aria-label="크게 보기">＋</button>` : ''}</div>`;
+    // 분류마다 제목을 달고, 그 안의 종류(반팔티, 셔츠 등)는 눌러서 펼치는 접이식 메뉴로 둔다.
+    // 전체 펼치기를 켰거나 빨래 중·보관 중만 볼 때는 모두 펼친다.
+    const open = (t) => state.closetAll || state.closetStatus !== 'all' || state.closetOpen.has(t.id);
     const sections = C.CATS.map((cat) => {
       const inCat = list.filter((i) => i.cat === cat.id);
       if (!inCat.length) return '';
       const types = C.TYPES.filter((t) => t.cat === cat.id && inCat.some((i) => i.type === t.id));
       return `<section class="group"><h2>${cat.name} <span class="muted small">${inCat.length}</span></h2>
-        ${types.map((t) => `<h3 class="muted small">${t.name} ${inCat.filter((i) => i.type === t.id).length}</h3>
-          <div class="grid">${inCat.filter((i) => i.type === t.id).map(card).join('')}</div>`).join('')}</section>`;
+        ${types.map((t) => `<button class="fold ${open(t) ? 'on' : ''}" data-fold="${t.id}" aria-expanded="${open(t)}">
+            <span>${t.name} <span class="muted small">${inCat.filter((i) => i.type === t.id).length}</span></span>
+            <span class="arrow">${open(t) ? '▴' : '▾'}</span></button>
+          ${open(t) ? `<div class="grid">${inCat.filter((i) => i.type === t.id).map(card).join('')}</div>` : ''}`).join('')}</section>`;
     }).join('');
+    if (list.length) {
+      $('#topAction').innerHTML = `<button class="btn viewmode" data-act="closetall" aria-pressed="${state.closetAll}">
+        ${state.closetAll ? '☰ 접어서 보기' : '▦ 전체 펼치기'}</button>`;
+    }
     view.innerHTML = `
       <div class="chips">${cats.map((c) => `<button class="chip ${state.closetCat === c.id ? 'on' : ''}" data-cat="${c.id}">${c.name} ${count(c.id)}</button>`).join('')}</div>
       <div class="chips">${statuses.map((s) => `<button class="chip ${state.closetStatus === s.id ? 'on' : ''}" data-status="${s.id}">${s.name}</button>`).join('')}</div>
@@ -844,6 +854,7 @@
     document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('on', b.dataset.tab === state.tab));
     $('#subtitle').textContent = SUB[state.tab];
     computePrefs();
+    $('#topAction').innerHTML = '';
     RENDER[state.tab]();
   }
 
@@ -862,6 +873,11 @@
     else if (d.go) { state.tab = d.go; render(); window.scrollTo(0, 0); }
     else if (d.cat) { state.closetCat = d.cat; render(); }
     else if (d.status) { state.closetStatus = d.status; render(); }
+    else if (d.zoom) { showPhoto(state.items.find((i) => i.id === d.zoom)); }
+    else if (d.fold) {
+      if (state.closetOpen.has(d.fold)) state.closetOpen.delete(d.fold); else state.closetOpen.add(d.fold);
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+    }
     else if (d.item) { state.tab === 'closet' ? editItem(d.item) : quickStatus(d.item); }
     else if (d.wear) { wear(d.wear.split(',')); }
     else if (d.fb) {
@@ -953,6 +969,25 @@
     state.settings.bgClean = e.target.checked;
     saveSettings(state.settings);
   });
+
+  // 옷장 오른쪽 위의 보기 방식 버튼: 전체 펼치기 ↔ 접어서 보기
+  $('#topAction').addEventListener('click', (e) => {
+    if (!e.target.closest('[data-act=closetall]')) return;
+    state.closetAll = !state.closetAll;
+    if (!state.closetAll) state.closetOpen.clear();
+    localStorage.setItem('codi-closet-all', state.closetAll ? '1' : '0');
+    render();
+  });
+
+  // 사진 크게 보기. 아무 곳이나 누르면 닫힌다.
+  const viewer = $('#viewer');
+  function showPhoto(item) {
+    if (!item || !item.photo) return;
+    viewer.innerHTML = `<img src="${photoUrl(item)}" alt="${esc(itemLabel(item))}"><span class="vcap">${esc(itemLabel(item))}</span>
+      <button class="vclose" aria-label="닫기">✕</button>`;
+    viewer.showModal();
+  }
+  viewer.addEventListener('click', () => viewer.close());
 
   sheet.addEventListener('cancel', (e) => e.preventDefault());
 
