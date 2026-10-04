@@ -57,7 +57,10 @@
   }
 
   async function saveItem(item) {
-    await DB.put('items', { ...item, updated: Date.now() });
+    // 신발은 깔창 등 안쪽을 되살린 사진을 쓴다. 임시로 들고 있던 사진은 저장하지 않는다.
+    const { shoePhoto, ...rest } = item;
+    if (shoePhoto && rest.cat === 'shoes') rest.photo = shoePhoto;
+    await DB.put('items', { ...rest, updated: Date.now() });
     photoUrls.delete(item.id);
     await reloadItems();
     queueSync();
@@ -296,7 +299,7 @@
     try {
       toast('사진 배경을 정리하는 중입니다');
       const r = await BG.clean(blob, (msg) => { sub.textContent = msg; });
-      return { blob: r.blob, clean: true, color: r.rgb ? nearestColor(...r.rgb) : null };
+      return { blob: r.blob, shoeBlob: r.shoeBlob, clean: true, color: r.rgb ? nearestColor(...r.rgb) : null };
     } catch (e) {
       toast('배경 정리를 하지 못해 원본 사진을 씁니다');
       return { blob, clean: false, color: null };
@@ -312,7 +315,7 @@
       sub.textContent = `배경 정리 ${done + failed + 1}/${todo.length}`;
       try {
         const r = await BG.clean(item.photo, (msg) => { sub.textContent = msg; });
-        await DB.put('items', { ...item, photo: r.blob, clean: true, photoRev: Date.now(), updated: Date.now() });
+        await DB.put('items', { ...item, photo: (item.cat === 'shoes' && r.shoeBlob) || r.blob, clean: true, photoRev: Date.now(), updated: Date.now() });
         photoUrls.delete(item.id);
         done++;
       } catch (e) {
@@ -384,6 +387,7 @@
               // 사진만 바꾼다. 색은 이미 정해 둔 값을 유지한다.
               const tidied = await tidy((await shrinkPhoto(input.files[0])).blob);
               item.photo = tidied.blob;
+              item.shoePhoto = tidied.shoeBlob || null;
               item.clean = tidied.clean;
               item.photoRev = Date.now();
               photoUrls.delete(item.id);
@@ -422,6 +426,7 @@
       const tidied = await tidy(shrunk.blob);
       const item = newItem(tidied.blob, tidied.color || shrunk.color);
       item.clean = tidied.clean;
+      item.shoePhoto = tidied.shoeBlob || null; // 분류를 신발로 고르면 이 사진으로 저장한다
       item.uses = C.type[item.type].uses.slice();
       const result = await itemForm(item, true, files.length > 1 ? `${i + 1} / ${files.length}` : '');
       if (result === 'save') { await saveItem(item); saved++; }
