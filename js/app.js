@@ -338,7 +338,8 @@
         ${isNew ? '' : `<button type="button" class="btn" data-act="photo">${url ? '사진 바꾸기' : '사진 추가'}</button>
         <input id="itemFile" type="file" accept="image/*" hidden>`}</div>
       <label>분류<select name="cat">${C.CATS.map((c) => `<option value="${c.id}" ${c.id === item.cat ? 'selected' : ''}>${c.name}</option>`).join('')}</select></label>
-      <label>종류<select name="type">${types.map((t) => `<option value="${t.id}" ${t.id === item.type ? 'selected' : ''}>${t.name}</option>`).join('')}</select></label>
+      <label>종류<select name="type">${types.map((t) => `<option value="${t.id}" ${t.id === item.type ? 'selected' : ''}>${t.name} · ${t.desc}</option>`).join('')}</select>
+        <span class="small" id="typeDesc">${esc(C.type[item.type].desc)}</span></label>
       <label>색상 <span id="colorName">${C.color[item.color].name}${isNew && url ? ' (사진에서 추정, 틀리면 고쳐 주세요)' : ''}</span>
         <div class="swatches">${C.COLORS.map((c) => `<button type="button" class="swatch ${c.id === item.color ? 'on' : ''}" data-color="${c.id}" style="background:${c.hex}" title="${c.name}" aria-label="${c.name}"></button>`).join('')}</div></label>
       <label>용도<div class="checks">${C.THEMES.map((t) => `<label><input type="checkbox" name="uses" value="${t.id}" ${item.uses.includes(t.id) ? 'checked' : ''}>${t.name}</label>`).join('')}</div></label>
@@ -362,6 +363,7 @@
       };
       form.type.onchange = () => {
         item.type = form.type.value;
+        $('#typeDesc').textContent = C.type[item.type].desc;
         if (isNew) { item.uses = C.type[item.type].uses.slice(); readForm(true); resolve(itemForm(item, isNew, queueNote)); }
       };
       const readForm = (keepUses) => {

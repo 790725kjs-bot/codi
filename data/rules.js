@@ -31,6 +31,8 @@
     sshirt: { solo: [23, 45], inner: [20, 22] },
     sknit: { solo: [23, 45], inner: [20, 22] },
     polo: { solo: [23, 45], inner: [20, 22] },
+    sleeveless: { solo: [26, 45], inner: [20, 25] },
+    lpolo: { solo: [17, 22], inner: [5, 16] }, // 긴팔 카라티: 얇은 니트와 같은 구간으로 봄 (어플의 판단)
     longsleeve: { solo: [20, 22], inner: [5, 19] },
     shirt: { solo: [20, 22], inner: [-30, 19] },
     denimshirt: { solo: [20, 22], inner: [5, 19] },
@@ -40,6 +42,8 @@
     hoodie: { solo: [17, 19], inner: [-30, 16] },
 
     thincardigan: { wear: [17, 22] },
+    vest: { wear: [5, 19] },
+    trench: { wear: [9, 16] },
     thinzip: { wear: [20, 22] },
     cardigan: { wear: [12, 19] },
     ziphoodie: { wear: [17, 19] },
@@ -62,6 +66,7 @@
     sandals: { wear: [23, 45] },
     boots: { wear: [-30, 16] },
     muffler: { wear: [-30, 8] },
+    gloves: { wear: [-30, 8] },
     bracelet: { wear: [20, 45] },
   };
 
@@ -119,6 +124,7 @@
     wooljacket: ['jeans'],
     ma1: ['jeans'],
     tracktop: ['sweatpants'],
+    windbreaker: ['cargo'],
     cardigan: ['slacks'],
     thincardigan: ['slacks'],
     fishtail: ['jeans'],

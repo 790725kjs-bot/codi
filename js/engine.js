@@ -240,7 +240,7 @@
       return isNeutral(a.color) || colors.includes(a.color) || ['brown', 'camel'].includes(a.color);
     });
     const order = theme === 'out'
-      ? ['muffler', 'watch', 'belt', 'bracelet', 'bag', 'necklace', 'glasses', 'cap']
+      ? ['muffler', 'gloves', 'watch', 'belt', 'bracelet', 'bag', 'necklace', 'glasses', 'cap']
       : ['cap', 'muffler', 'bag', 'watch'];
     const picked = [];
     for (const type of order) {
