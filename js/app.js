@@ -224,20 +224,34 @@
   }
 
   // ---------- 옷장 ----------
+  const order = (list, id) => list.findIndex((x) => x.id === id);
+
   function renderCloset() {
     const cats = [{ id: 'all', name: '전체' }, ...C.CATS];
     const statuses = [{ id: 'all', name: '모든 상태' }, { id: 'wash', name: '빨래 중' }, { id: 'store', name: '보관 중' }];
     const list = state.items
       .filter((i) => state.closetCat === 'all' || i.cat === state.closetCat)
       .filter((i) => state.closetStatus === 'all' || i.status === state.closetStatus)
-      .sort((a, b) => C.TYPES.findIndex((t) => t.id === a.type) - C.TYPES.findIndex((t) => t.id === b.type));
+      // 분류 → 종류 → 색 → 이름 순으로 늘어놓는다
+      .sort((a, b) => order(C.TYPES, a.type) - order(C.TYPES, b.type) || order(C.COLORS, a.color) - order(C.COLORS, b.color)
+        || itemLabel(a).localeCompare(itemLabel(b), 'ko'));
     const count = (cat) => state.items.filter((i) => cat === 'all' || i.cat === cat).length;
+    const card = (i) => `<button class="piece item" data-item="${i.id}">
+        ${thumb(i)}${i.status !== 'ok' ? `<span class="badge">${STATUS[i.status]}</span>` : ''}
+        <span class="cap">${esc(itemLabel(i))}</span></button>`;
+    // 분류마다 제목을 달고, 그 안에서는 종류(반팔티, 셔츠 등)별로 작은 제목을 단다
+    const sections = C.CATS.map((cat) => {
+      const inCat = list.filter((i) => i.cat === cat.id);
+      if (!inCat.length) return '';
+      const types = C.TYPES.filter((t) => t.cat === cat.id && inCat.some((i) => i.type === t.id));
+      return `<section class="group"><h2>${cat.name} <span class="muted small">${inCat.length}</span></h2>
+        ${types.map((t) => `<h3 class="muted small">${t.name} ${inCat.filter((i) => i.type === t.id).length}</h3>
+          <div class="grid">${inCat.filter((i) => i.type === t.id).map(card).join('')}</div>`).join('')}</section>`;
+    }).join('');
     view.innerHTML = `
       <div class="chips">${cats.map((c) => `<button class="chip ${state.closetCat === c.id ? 'on' : ''}" data-cat="${c.id}">${c.name} ${count(c.id)}</button>`).join('')}</div>
       <div class="chips">${statuses.map((s) => `<button class="chip ${state.closetStatus === s.id ? 'on' : ''}" data-status="${s.id}">${s.name}</button>`).join('')}</div>
-      ${list.length ? `<div class="grid">${list.map((i) => `<button class="piece item" data-item="${i.id}">
-        ${thumb(i)}${i.status !== 'ok' ? `<span class="badge">${STATUS[i.status]}</span>` : ''}
-        <span class="cap">${esc(itemLabel(i))}</span></button>`).join('')}</div>`
+      ${list.length ? sections
     : `<section class="card empty">${state.items.length ? '조건에 맞는 옷이 없습니다.' : '오른쪽 아래 ＋ 버튼으로 옷 사진을 올려 보세요. 여러 장을 한 번에 고를 수 있습니다.'}</section>`}
       <button class="fab" data-act="add" aria-label="옷 추가">＋</button>
       <input id="file" type="file" accept="image/*" multiple hidden>`;

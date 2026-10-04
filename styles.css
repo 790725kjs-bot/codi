@@ -198,3 +198,8 @@ td.low { color: var(--warn); }
   background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px; font-size: 14px; z-index: 20;
   max-width: calc(100vw - 32px);
 }
+
+/* 옷장: 분류별 묶음 */
+.group { display: grid; gap: 8px; }
+.group h2 { font-size: 17px; margin-top: 6px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.group h3 { font-weight: 600; margin-top: 4px; }
