@@ -191,8 +191,9 @@
     return `<section class="card combo">
       <div class="head"><h2 style="margin:0">조합 ${index + 1}</h2>
         <span class="small muted">${esc([combo.shared, combo.note].filter(Boolean).join(' · '))}</span></div>
-      <div class="pieces">${parts.map((p) => `<button class="piece" data-item="${p.id}">${thumb(p)}
-        <span class="cap">${esc(itemLabel(p))}</span></button>`).join('')}</div>
+      <div class="pieces">${parts.map((p) => `<div class="item"><button class="piece" data-item="${p.id}">${thumb(p)}
+        <span class="cap">${esc(itemLabel(p))}</span></button>
+        ${p.photo ? `<button class="zoom" data-zoom="${p.id}" aria-label="크게 보기">＋</button>` : ''}</div>`).join('')}</div>
       <ul class="reasons">${combo.reasons.map((r) => `<li>${esc(r.text)}
         ${r.src ? `<a href="${r.src.url}" target="_blank" rel="noopener">근거 영상</a>` : ''}</li>`).join('')}
         ${combo.reasons.length ? '' : '<li>무채색 중심의 무난한 조합</li>'}</ul>
@@ -602,7 +603,8 @@
       const roleName = Object.fromEntries(ROLES);
       body = `<section class="card"><div class="row between"><h2 style="margin:0">평가</h2><span class="tag ${cls}">${label}</span></div>
           <p class="small muted" style="margin-top:4px">${rec.weather ? `그날 체감 ${rec.weather.feel}℃ 기준` : '그날 날씨 기록이 없어 기온은 평가하지 않았습니다'} · 채널 가이드 규칙으로 평가</p>
-          <div class="pieces" style="margin-top:10px">${worn.map((p) => `<div class="piece">${thumb(p)}<span class="cap">${esc(itemLabel(p))}</span></div>`).join('')}</div></section>
+          <div class="pieces" style="margin-top:10px">${worn.map((p) => `<div class="item"><div class="piece">${thumb(p)}<span class="cap">${esc(itemLabel(p))}</span></div>
+            ${p.photo ? `<button class="zoom" data-zoom="${p.id}" aria-label="크게 보기">＋</button>` : ''}</div>`).join('')}</div></section>
         <section class="card"><h2>좋은 점</h2>${ev.reasons.length
     ? `<ul class="reasons" style="margin:0">${ev.reasons.map((x) => `<li>${esc(x.text)}${link(x)}</li>`).join('')}</ul>`
     : '<p class="small muted">채널 조합표에 딱 맞는 부분은 없지만, 무채색 중심이면 무난한 조합입니다.</p>'}</section>

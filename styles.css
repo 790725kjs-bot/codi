@@ -82,7 +82,7 @@ main { max-width: 720px; margin: 0 auto; padding: 4px 16px 24px; display: grid; 
 
 /* 코디 카드 */
 .combo .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.pieces { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+.pieces { display: grid; grid-template-columns: repeat(auto-fill, minmax(126px, 1fr)); gap: 10px; }
 .piece { border: 0; background: none; padding: 0; text-align: left; display: grid; gap: 4px; min-width: 0; }
 .thumb {
   aspect-ratio: 1; width: 100%; border-radius: 12px; border: 1px solid var(--line);
