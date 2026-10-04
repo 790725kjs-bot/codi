@@ -2,7 +2,7 @@
   const C = window.CODI_CATALOG, R = window.CODI_RULES, CH = window.CODI_CHANNEL, BASICS = window.CODI_BASICS;
   const E = window.CODI_ENGINE;
   const { DB, loadSettings, saveSettings, exportAll, importAll } = window.CODI_DB;
-  const SYNC = window.CODI_SYNC;
+  const SYNC = window.CODI_SYNC, BG = window.CODI_BG;
 
   const $ = (sel, el = document) => el.querySelector(sel);
   const view = $('#view'), sheet = $('#sheet');
@@ -262,7 +262,10 @@
     let r = 0, g = 0, b = 0;
     const n = data.length / 4;
     for (let i = 0; i < data.length; i += 4) { r += data[i]; g += data[i + 1]; b += data[i + 2]; }
-    r /= n; g /= n; b /= n;
+    return nearestColor(r / n, g / n, b / n);
+  }
+
+  function nearestColor(r, g, b) {
     let best = C.COLORS[0], bestDist = Infinity;
     for (const color of C.COLORS) {
       const v = parseInt(color.hex.slice(1), 16);
@@ -270,6 +273,43 @@
       if (dist < bestDist) { bestDist = dist; best = color; }
     }
     return best.id;
+  }
+
+  // 설정이 켜져 있으면 배경을 지우고 연한 아이보리로 바꾼다. 실패하면 원본을 그대로 쓴다.
+  async function tidy(blob) {
+    if (!state.settings.bgClean) return { blob, clean: false, color: null };
+    const sub = $('#subtitle');
+    try {
+      toast('사진 배경을 정리하는 중입니다');
+      const r = await BG.clean(blob, (msg) => { sub.textContent = msg; });
+      return { blob: r.blob, clean: true, color: r.rgb ? nearestColor(...r.rgb) : null };
+    } catch (e) {
+      toast('배경 정리를 하지 못해 원본 사진을 씁니다');
+      return { blob, clean: false, color: null };
+    } finally { sub.textContent = SUB[state.tab]; }
+  }
+
+  // 옷장에 이미 있는 사진 중 아직 정리하지 않은 것을 모두 정리한다
+  async function cleanAll() {
+    const todo = state.items.filter((i) => i.photo && !i.clean);
+    const sub = $('#subtitle');
+    let done = 0, failed = 0;
+    for (const item of todo) {
+      sub.textContent = `배경 정리 ${done + failed + 1}/${todo.length}`;
+      try {
+        const r = await BG.clean(item.photo, (msg) => { sub.textContent = msg; });
+        await DB.put('items', { ...item, photo: r.blob, clean: true, photoRev: Date.now(), updated: Date.now() });
+        photoUrls.delete(item.id);
+        done++;
+      } catch (e) {
+        failed++;
+        if (failed >= 3 && !done) break; // 모델을 받지 못하는 상황이면 멈춘다
+      }
+    }
+    await reloadItems();
+    queueSync(500);
+    toast(failed ? `${done}장 정리, ${failed}장은 하지 못했습니다` : `${done}장을 정리했습니다`);
+    render();
   }
 
   function itemForm(item, isNew, queueNote) {
@@ -328,7 +368,9 @@
             item.type = form.type.value;
             try {
               // 사진만 바꾼다. 색은 이미 정해 둔 값을 유지한다.
-              item.photo = (await shrinkPhoto(input.files[0])).blob;
+              const tidied = await tidy((await shrinkPhoto(input.files[0])).blob);
+              item.photo = tidied.blob;
+              item.clean = tidied.clean;
               item.photoRev = Date.now();
               photoUrls.delete(item.id);
               resolve(itemForm(item, isNew, queueNote));
@@ -363,7 +405,9 @@
     for (let i = 0; i < files.length; i++) {
       let shrunk;
       try { shrunk = await shrinkPhoto(files[i]); } catch (e) { toast('읽을 수 없는 사진은 건너뜁니다'); continue; }
-      const item = newItem(shrunk.blob, shrunk.color);
+      const tidied = await tidy(shrunk.blob);
+      const item = newItem(tidied.blob, tidied.color || shrunk.color);
+      item.clean = tidied.clean;
       item.uses = C.type[item.type].uses.slice();
       const result = await itemForm(item, true, files.length > 1 ? `${i + 1} / ${files.length}` : '');
       if (result === 'save') { await saveItem(item); saved++; }
@@ -603,7 +647,11 @@
           input.onchange = async () => {
             if (!input.files[0]) return;
             keep();
-            try { rec.photo = (await shrinkPhoto(input.files[0])).blob; photoUrls.delete(rec.id); draw(); }
+            try {
+              rec.photo = (await tidy((await shrinkPhoto(input.files[0])).blob)).blob;
+              rec.photoRev = Date.now();
+              photoUrls.delete(rec.id); draw();
+            }
             catch (err) { toast('읽을 수 없는 사진입니다'); }
           };
           input.click();
@@ -724,6 +772,7 @@
   // ---------- 설정 ----------
   function renderSettings() {
     const p = state.settings.profile, sync = state.settings.sync;
+    const bgTodo = state.items.filter((i) => i.photo && !i.clean).length;
     const opt = (list, cur) => list.map(([v, n]) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${n}</option>`).join('');
     view.innerHTML = `
       <section class="card"><h2>내 정보</h2>
@@ -751,6 +800,11 @@
             ${sync.token ? '<button type="button" class="btn" data-act="synclink">다른 기기용 링크 복사</button>' : ''}</div>
           ${sync.token ? '<button type="button" class="btn danger" data-act="syncoff">이 기기 연결 끊기</button>' : ''}
         </form></section>
+      <section class="card"><h2>사진 배경 정리</h2>
+        <p class="small muted">사진을 올릴 때 배경을 지우고 연한 아이보리로 바꿉니다. 이 기기 안에서 처리해 요금이 없고 사진이 밖으로 나가지 않습니다.
+          처음 한 번 모델 파일(수십 MB)을 내려받고, 사진 한 장에 몇 초에서 십여 초 걸립니다.</p>
+        <div class="checks" style="margin-top:8px"><label><input type="checkbox" id="bgToggle" ${state.settings.bgClean ? 'checked' : ''}>사진을 올릴 때 자동으로 정리</label></div>
+        <div class="actions"><button class="btn" data-act="cleanall" ${bgTodo ? '' : 'disabled'}>${bgTodo ? `옷장 사진 ${bgTodo}장 정리하기` : '옷장 사진이 모두 정리되어 있습니다'}</button></div></section>
       <section class="card"><h2>백업</h2>
         <p class="small muted">옷장과 사진은 이 기기에만 저장됩니다. 휴대폰을 바꾸거나 브라우저 데이터를 지우기 전에 백업 파일을 받아 두세요.</p>
         <div class="actions"><button class="btn" data-act="export">백업 파일 받기</button>
@@ -817,6 +871,9 @@
       await loadWeather(true);
       toast(state.weatherError || '날씨를 새로 받았습니다');
       render();
+    } else if (d.act === 'cleanall') {
+      t.disabled = true;
+      await cleanAll();
     } else if (d.act === 'synclink') {
       // 집 안 임시 주소(http)에서 눌러도 정식 주소로 연결되는 링크를 만든다
       const home = location.protocol === 'https:' ? `${location.origin}${location.pathname}` : 'https://790725kjs-bot.github.io/codi/';
@@ -868,6 +925,12 @@
     });
     saveShared();
     toast('저장했습니다');
+  });
+
+  view.addEventListener('change', (e) => {
+    if (e.target.id !== 'bgToggle') return;
+    state.settings.bgClean = e.target.checked;
+    saveSettings(state.settings);
   });
 
   sheet.addEventListener('cancel', (e) => e.preventDefault());

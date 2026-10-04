@@ -40,6 +40,7 @@
     profile: { height: 175, weight: 70, age: 35, skin: 'tan', style: 'both' },
     place: { name: '서울', lat: 37.5665, lon: 126.978 },
     feedback: {},
+    bgClean: true, // 사진을 올릴 때 배경을 정리할지 (기기마다 따로 정한다)
     sync: { token: '', repo: '790725kjs-bot/codi-data' },
   };
 
