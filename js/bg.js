@@ -30,6 +30,103 @@
     return ready;
   }
 
+  // 모델이 옷의 일부(펼친 소매 등)를 흐릿하게만 잡아 배경처럼 지워지는 경우를 바로잡는다.
+  // 확실한 옷 부분과 확실한 배경의 색 분포를 각각 모은 뒤, 모델이 희미하게라도 반응한 영역 중
+  // 색이 옷 쪽에 가깝고 옷과 이어져 있는 부분을 옷으로 되살린다.
+  // 평범한 사진의 가장자리까지 건드리지 않도록, 되살릴 넓이가 옷 넓이의 8% 이상일 때만 적용한다.
+  // 반환: 되살린 픽셀 수
+  function rescueFaint(mask, px, w, h) {
+    const SURE = 230, FAINT = 8, CLEAR = 2, LIKELY = 0.8, MIN_SHARE = 0.08;
+    const total = w * h;
+    const bin = (p) => ((px[p * 4] >> 4) << 8) | ((px[p * 4 + 1] >> 4) << 4) | (px[p * 4 + 2] >> 4);
+    const fg = new Float32Array(4096), bg = new Float32Array(4096);
+    let nf = 0, nb = 0;
+    for (let p = 0; p < total; p++) {
+      if (mask[p] >= SURE) { fg[bin(p)]++; nf++; } else if (mask[p] <= CLEAR) { bg[bin(p)]++; nb++; }
+    }
+    if (!nf || !nb) return 0;
+    const candidate = (p) => {
+      if (mask[p] < FAINT || mask[p] >= SURE) return false;
+      const b = bin(p), f = fg[b] / nf, g = bg[b] / nb;
+      return f > 0.0005 && f / (f + g) > LIKELY;
+    };
+
+    const seen = new Uint8Array(total);
+    const stack = new Int32Array(total);
+    const found = [];
+    let top = 0, faint = 0;
+    const push = (p) => { if (!seen[p] && candidate(p)) { seen[p] = 1; stack[top++] = p; } };
+    // 확실한 옷에 맞닿은 후보에서 시작해 이어진 후보를 따라간다
+    for (let p = 0; p < total; p++) {
+      if (mask[p] < SURE) continue;
+      const x = p % w;
+      if (x > 0) push(p - 1);
+      if (x < w - 1) push(p + 1);
+      if (p >= w) push(p - w);
+      if (p < total - w) push(p + w);
+    }
+    while (top) {
+      const p = stack[--top];
+      found.push(p);
+      if (mask[p] < 128) faint++;
+      const x = p % w;
+      if (x > 0) push(p - 1);
+      if (x < w - 1) push(p + 1);
+      if (p >= w) push(p - w);
+      if (p < total - w) push(p + w);
+    }
+    if (faint < nf * MIN_SHARE) return 0;
+
+    // 모델이 옷의 큰 부분을 놓친 사진으로 판단되면, 모델이 전혀 반응하지 않은 곳까지
+    // 색만 보고 이어서 되살린다 (소매 끝처럼 반응이 0에 가까운 부분)
+    const grow = (p) => {
+      if (seen[p] || mask[p] >= SURE) return;
+      const b = bin(p), f = fg[b] / nf, g = bg[b] / nb;
+      if (f > 0.0005 && f / (f + g) > LIKELY) { seen[p] = 1; stack[top++] = p; }
+    };
+    const edge = found.slice();
+    for (const p of edge) {
+      const x = p % w;
+      if (x > 0) grow(p - 1);
+      if (x < w - 1) grow(p + 1);
+      if (p >= w) grow(p - w);
+      if (p < total - w) grow(p + w);
+    }
+    while (top) {
+      const p = stack[--top];
+      found.push(p);
+      const x = p % w;
+      if (x > 0) grow(p - 1);
+      if (x < w - 1) grow(p + 1);
+      if (p >= w) grow(p - w);
+      if (p < total - w) grow(p + w);
+    }
+    for (const p of found) mask[p] = 255;
+
+    // 되살린 부분의 거친 가장자리와 잔구멍을 다듬는다: 주변 5×5 중 절반 넘게 옷이면 옷으로 본다
+    let x0 = w, x1 = 0, y0 = h, y1 = 0;
+    for (const p of found) {
+      const x = p % w, y = (p - x) / w;
+      if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+    }
+    x0 = Math.max(2, x0 - 3); x1 = Math.min(w - 3, x1 + 3); y0 = Math.max(2, y0 - 3); y1 = Math.min(h - 3, y1 + 3);
+    for (let pass = 0; pass < 2; pass++) {
+      const fill = [], drop = [];
+      for (let y = y0; y <= y1; y++) {
+        for (let x = x0; x <= x1; x++) {
+          const p = y * w + x;
+          let on = 0;
+          for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) if (mask[p + dy * w + dx] >= 128) on++;
+          if (mask[p] < 128 && on >= 15) fill.push(p);
+          else if (seen[p] && on <= 8) drop.push(p);
+        }
+      }
+      for (const p of fill) mask[p] = 255;
+      for (const p of drop) mask[p] = 0;
+    }
+    return found.length;
+  }
+
   // 모델이 신발 안쪽(밝은 깔창 등)을 배경으로 잘못 보는 경우를 바로잡는다. 신발 사진에만 쓴다.
   // 사진 가장자리와 이어진 배경만 진짜 배경으로 보고, 신발에 둘러싸인 영역은 색이 바깥 배경과
   // 다르면 신발의 일부로 되살린다. 옷에는 쓰지 않는다: 소매와 몸통 사이로 보이는 바닥까지 되살아나기 때문.
@@ -112,10 +209,11 @@
       return { blob: out, rgb: n > 200 ? [r / n, g / n, b / n] : null };
     };
 
+    const rescued = rescueFaint(mask.data, original.data, w, h);
     const plain = await compose(mask.data);
     const shoeMask = new Uint8Array(mask.data);
     const shoe = restoreInside(shoeMask, original.data, w, h) ? await compose(shoeMask) : null;
-    return { blob: plain.blob, rgb: plain.rgb, shoeBlob: shoe && shoe.blob };
+    return { blob: plain.blob, rgb: plain.rgb, shoeBlob: shoe && shoe.blob, rescued };
   }
 
   root.CODI_BG = { clean, load };
