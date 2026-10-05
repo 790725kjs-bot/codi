@@ -1,8 +1,13 @@
 // tools/build_channel_data.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_CHANNEL = {
- "updated": "2026-10-04",
- "count": 324,
+ "updated": "2026-10-05",
+ "count": 325,
  "deals": [
+  {
+   "id": "aqBWC6p99-g",
+   "title": "무신사 애프터세일 끝나기 전에 꼭보는 게 좋을 듯",
+   "date": "2026-10-04"
+  },
   {
    "id": "PwK8bLoPZmE",
    "title": "지금 챙겨야 할 1순위 신발 (feat. 30퍼 쿠폰)",
@@ -297,11 +302,6 @@ window.CODI_CHANNEL = {
    "id": "4KUCO3wmOdk",
    "title": "이렇게 할인한 적은 없었던,, 무신사 꿀템 4가지",
    "date": "2025-12-30"
-  },
-  {
-   "id": "JUdIjxT0kME",
-   "title": "25년에 본 패딩 중 가장 마음에 듦 (feat. 40% 한정기간 할인)",
-   "date": "2025-12-20"
   }
  ],
  "guides": [
@@ -705,8 +705,20 @@ window.CODI_CHANNEL = {
   {
    "type": "denimshirt",
    "name": "[젠플록스x웬즈데이오아시스] (크롭) 퓨어 코튼 웨스턴 데님 셔츠_3COLOR",
-   "id": "43OkC1_ho0c",
-   "date": "2026-10-02"
+   "id": "aqBWC6p99-g",
+   "date": "2026-10-04"
+  },
+  {
+   "type": "chino",
+   "name": "[젠플록스X아워데이즈] 세미 커브드 치노 팬츠 [3COLORS]",
+   "id": "aqBWC6p99-g",
+   "date": "2026-10-04"
+  },
+  {
+   "type": "cardigan",
+   "name": "[젠플록스X수아레] 데일리 라운드 크롭 가디건 - 5 COLOR",
+   "id": "aqBWC6p99-g",
+   "date": "2026-10-04"
   },
   {
    "type": "jeans",
@@ -741,18 +753,6 @@ window.CODI_CHANNEL = {
   {
    "type": "wooljacket",
    "name": "애프터프레이 벨라 플러스 워시드 블루종 네이비",
-   "id": "tfCegC1cGCY",
-   "date": "2026-09-26"
-  },
-  {
-   "type": "cardigan",
-   "name": "[젠플록스X수아레] 데일리 라운드 크롭 가디건 - 5 COLOR",
-   "id": "tfCegC1cGCY",
-   "date": "2026-09-26"
-  },
-  {
-   "type": "chino",
-   "name": "[젠플록스X아워데이즈] 세미 커브드 치노 팬츠 [3COLORS]",
    "id": "tfCegC1cGCY",
    "date": "2026-09-26"
   },
