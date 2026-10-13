@@ -239,9 +239,10 @@
   }
 
   // 싫어요 사유를 점수로 바꾼다.
-  //   옷 자체·핏이 싫음 → 그 옷이 들어간 모든 조합을 낮춘다
-  //   색·분위기가 안 맞음 → 그때 함께였던 옷과 다시 묶이면 크게, 같은 색(색 사유)이나
-  //                          같은 종류(분위기 사유)의 다른 옷과 묶여도 조금 낮춘다
+  //   색·분위기·핏이 안 맞음 → 그때 함께였던 옷과 다시 묶이면 크게, 같은 색(색 사유)이나
+  //                             같은 종류(분위기·핏 사유)의 다른 옷과 묶여도 조금 낮춘다.
+  //                             그 옷 자체는 낮추지 않아, 다른 옷과의 조합으로는 계속 나온다
+  //   (예전 기록의 '옷 자체가 내키지 않음'만 그 옷이 들어간 모든 조합을 낮춘다)
   //   덥다·춥다 → 점수가 아니라 그 옷을 입는 기온 한계를 좁혀서 반영한다
   const NEAR = { shoes: ['bottom'], top: ['bottom', 'outer'], outer: ['top', 'bottom'], bottom: ['top', 'shoes', 'outer'] };
   function dislikePenalty(combo, dislikes) {
@@ -251,7 +252,7 @@
     for (const r of dislikes) {
       const mine = parts[r.role];
       if (!mine || mine.id !== r.item) continue;
-      if (r.reason === 'item' || r.reason === 'fit') { penalty += 4; continue; }
+      if (r.reason === 'item') { penalty += 4; continue; }
       if (r.reason === 'hot' || r.reason === 'cold') continue;
       let together = 0, similar = 0;
       for (const w of r.with) {
@@ -259,7 +260,7 @@
         if (!p) continue;
         if (p.id === w.id) together++;
         else if (NEAR[r.role].includes(w.role)
-          && ((r.reason === 'color' && p.color === w.color) || (r.reason === 'style' && p.type === w.type))) similar++;
+          && ((r.reason === 'color' && p.color === w.color) || ((r.reason === 'style' || r.reason === 'fit') && p.type === w.type))) similar++;
       }
       penalty += Math.min(9, together * 5) + Math.min(6, similar * 3);
     }
@@ -271,7 +272,7 @@
     if (!dislikes) return false;
     const ids = [combo.top, combo.outer, combo.bottom, combo.shoes].filter(Boolean).map((x) => x.id);
     return dislikes.some((r) => r.item === acc.id
-      && (r.reason === 'item' || r.reason === 'fit' || r.with.some((w) => ids.includes(w.id))));
+      && (r.reason === 'item' || r.with.some((w) => ids.includes(w.id))));
   }
 
   function daysBetween(a, b) {

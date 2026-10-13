@@ -719,14 +719,15 @@
 
   // ---------- 조합 피드백: 어떤 아이템이 왜 마음에 들지 않는지 ----------
   const WHY = [['color', '색이 안 어울림'], ['style', '분위기·격식이 안 맞음'], ['hot', '이 날씨엔 더움'], ['cold', '이 날씨엔 추움'],
-    ['fit', '핏·사이즈가 불편함'], ['item', '이 옷 자체가 내키지 않음'], ['other', '기타']];
-  const whyName = (id) => (WHY.find((x) => x[0] === id) || [0, id])[1];
+    ['fit', '핏·사이즈가 불편함'], ['other', '기타']];
+  // 'item'은 더 이상 고를 수 없지만 예전에 남긴 기록을 보여 주기 위해 이름만 남긴다
+  const whyName = (id) => (id === 'item' ? '이 옷 자체가 내키지 않음' : (WHY.find((x) => x[0] === id) || [0, id])[1]);
   const WHY_EFFECT = {
     color: '함께였던 옷, 그리고 같은 색의 다른 옷과는 덜 묶습니다.',
     style: '함께였던 옷, 그리고 같은 종류의 다른 옷과는 덜 묶습니다.',
     hot: '이 정도 기온부터는 이 옷을 추천하지 않습니다. 더 서늘한 날에만 나옵니다.',
     cold: '이 정도 기온까지는 이 옷을 추천하지 않습니다. 더 따뜻한 날에만 나옵니다.',
-    fit: '이 옷이 들어간 조합을 전반적으로 뒤로 미룹니다.',
+    fit: '이 옷은 계속 추천하되, 함께였던 옷이나 같은 종류의 옷과는 덜 묶고 다른 조합으로 찾습니다.',
     item: '이 옷이 들어간 조합을 전반적으로 뒤로 미룹니다.',
     other: '함께였던 옷과는 덜 묶습니다. 메모는 기록으로 남깁니다.',
   };
@@ -805,7 +806,7 @@
       <p class="small muted" style="margin-bottom:8px">오늘 코디에서 싫어요로 남긴 기록입니다. 새 조합을 만들 때 반영되며, 지우면 반영도 사라집니다.</p>
       <ul class="list">${list.map((r) => `<li><div class="row between"><span><strong>${esc(label(r.item))}</strong>
           <span class="tag">${whyName(r.reason)}</span></span><button class="btn" data-undislike="${r.id}">지우기</button></div>
-        ${r.with.length && !['fit', 'item', 'hot', 'cold'].includes(r.reason) ? `<div class="small muted">함께였던 옷: ${esc(r.with.map((w) => label(w.id)).join(', '))}</div>` : ''}
+        ${r.with.length && !['item', 'hot', 'cold'].includes(r.reason) ? `<div class="small muted">함께였던 옷: ${esc(r.with.map((w) => label(w.id)).join(', '))}</div>` : ''}
         ${r.memo ? `<div class="small">“${esc(r.memo)}”</div>` : ''}
         <div class="small muted">${r.date}${r.feel != null && (r.reason === 'hot' || r.reason === 'cold') ? ` · 체감 ${r.feel}℃` : ''} · ${WHY_EFFECT[r.reason]}</div></li>`).join('')}</ul></section>`;
   }
