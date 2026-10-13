@@ -18,10 +18,17 @@
     return null;
   }
 
+  // 사용자가 "이 날씨엔 덥다/춥다"고 한 옷의 기온 한계 { 옷 id: { max, min } } (추천을 만들 때 채운다)
+  let limits = {};
+
   function tempFit(item, role, t) {
     const rule = R.temp[item.type];
-    if (!rule) return 0;
-    return fit(rule[role] || rule.wear, t);
+    const lim = limits[item.id];
+    let range = rule && (rule[role] || rule.wear);
+    if (!range && !lim) return 0;
+    range = range || [-99, 99];
+    if (lim) range = [Math.max(range[0], lim.min == null ? -99 : lim.min), Math.min(range[1], lim.max == null ? 99 : lim.max)];
+    return fit(range, t);
   }
 
   function inList(table, key, value) {
@@ -153,6 +160,9 @@
       const fb = feedback && feedback[`${top.id}|${bottom.id}`];
       if (fb) score += fb > 0 ? 2 : -8;
 
+      // 조합에서 빼 달라고 한 아이템과 그 사유
+      score += dislikePenalty(combo, ctx.dislikes);
+
       // 직접 입고 남긴 선호
       const prefs = ctx.prefs;
       if (prefs) {
@@ -228,6 +238,42 @@
     return out.sort((a, b) => b.gain - a.gain).slice(0, 2);
   }
 
+  // 싫어요 사유를 점수로 바꾼다.
+  //   옷 자체·핏이 싫음 → 그 옷이 들어간 모든 조합을 낮춘다
+  //   색·분위기가 안 맞음 → 그때 함께였던 옷과 다시 묶이면 크게, 같은 색(색 사유)이나
+  //                          같은 종류(분위기 사유)의 다른 옷과 묶여도 조금 낮춘다
+  //   덥다·춥다 → 점수가 아니라 그 옷을 입는 기온 한계를 좁혀서 반영한다
+  const NEAR = { shoes: ['bottom'], top: ['bottom', 'outer'], outer: ['top', 'bottom'], bottom: ['top', 'shoes', 'outer'] };
+  function dislikePenalty(combo, dislikes) {
+    if (!dislikes || !dislikes.length) return 0;
+    const parts = { top: combo.top, outer: combo.outer, bottom: combo.bottom, shoes: combo.shoes };
+    let penalty = 0;
+    for (const r of dislikes) {
+      const mine = parts[r.role];
+      if (!mine || mine.id !== r.item) continue;
+      if (r.reason === 'item' || r.reason === 'fit') { penalty += 4; continue; }
+      if (r.reason === 'hot' || r.reason === 'cold') continue;
+      let together = 0, similar = 0;
+      for (const w of r.with) {
+        const p = parts[w.role];
+        if (!p) continue;
+        if (p.id === w.id) together++;
+        else if (NEAR[r.role].includes(w.role)
+          && ((r.reason === 'color' && p.color === w.color) || (r.reason === 'style' && p.type === w.type))) similar++;
+      }
+      penalty += Math.min(9, together * 5) + Math.min(6, similar * 3);
+    }
+    return -penalty;
+  }
+
+  // 액세서리는 싫다고 한 조합의 옷과 다시 묶지 않는다
+  function accBlocked(acc, combo, dislikes) {
+    if (!dislikes) return false;
+    const ids = [combo.top, combo.outer, combo.bottom, combo.shoes].filter(Boolean).map((x) => x.id);
+    return dislikes.some((r) => r.item === acc.id
+      && (r.reason === 'item' || r.reason === 'fit' || r.with.some((w) => ids.includes(w.id))));
+  }
+
   function daysBetween(a, b) {
     return Math.abs((new Date(b) - new Date(a)) / 864e5);
   }
@@ -236,7 +282,7 @@
     const { theme, weather } = ctx;
     const colors = [combo.top, combo.outer, combo.bottom, combo.shoes].filter(Boolean).map((x) => x.color);
     const ok = accs.filter((a) => {
-      if (tempFit(a, 'wear', weather.feel) !== 0) return false;
+      if (tempFit(a, 'wear', weather.feel) !== 0 || accBlocked(a, combo, ctx.dislikes)) return false;
       return isNeutral(a.color) || colors.includes(a.color) || ['brown', 'camel'].includes(a.color);
     });
     const order = theme === 'out'
@@ -255,6 +301,7 @@
   function buildCombos(items, ctx) {
     const { theme, weather } = ctx;
     const t = weather.feel;
+    limits = ctx.tempLimits || {};
     const usable = items.filter((i) => i.status === 'ok' && i.uses.includes(theme));
     const of = (cat) => usable.filter((i) => i.cat === cat);
     const tops = of('top'), bottoms = of('bottom'), outers = of('outer'), accs = of('acc');

@@ -152,10 +152,11 @@
       const mine = loadSettings();
       const mineAt = mine.updated || 0, theirsAt = remoteState ? remoteState.value.updated || 0 : -1;
       if (remoteState && theirsAt > mineAt) {
-        saveSettings({ ...mine, profile: remoteState.value.profile, feedback: remoteState.value.feedback, updated: theirsAt });
+        saveSettings({ ...mine, profile: remoteState.value.profile, feedback: remoteState.value.feedback,
+          dislikes: remoteState.value.dislikes || [], updated: theirsAt });
         pulled++;
       } else if (mineAt > theirsAt && mineAt > 0) {
-        const doc = { profile: mine.profile, feedback: mine.feedback, updated: mineAt };
+        const doc = { profile: mine.profile, feedback: mine.feedback, dislikes: mine.dislikes || [], updated: mineAt };
         if (await gh.put('state.json', utf8ToBase64(JSON.stringify(doc)), remoteState && remoteState.sha)) pushed++;
       }
 

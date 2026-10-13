@@ -228,3 +228,13 @@ td.low { color: var(--warn); }
 #viewer img { max-width: 100vw; max-height: 100dvh; object-fit: contain; }
 #viewer .vcap { position: fixed; left: 0; right: 0; bottom: calc(18px + env(safe-area-inset-bottom)); text-align: center; color: #fff; font-size: 14px; text-shadow: 0 1px 3px #000; }
 #viewer .vclose { position: fixed; top: calc(12px + env(safe-area-inset-top)); right: 14px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .2); color: #fff; font-size: 18px; }
+
+/* 조합 피드백: 아이템 고르기 */
+.choose { display: grid; gap: 8px; }
+.choose button {
+  display: grid; grid-template-columns: 64px 1fr 24px; gap: 12px; align-items: center; text-align: left;
+  border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 8px;
+}
+.choose button.on { border-color: var(--accent); outline: 2px solid var(--accent); }
+.choose .thumb { font-size: 10px; padding: 2px; }
+.choose .mark { color: var(--accent); font-weight: 700; font-size: 18px; }

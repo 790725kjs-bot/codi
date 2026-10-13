@@ -153,7 +153,8 @@
   }
 
   function context(theme, weather) {
-    return { theme, weather, profile: state.settings.profile, feedback: state.settings.feedback, prefs: state.prefs, today: today() };
+    return { theme, weather, profile: state.settings.profile, feedback: state.settings.feedback, prefs: state.prefs,
+      dislikes: state.settings.dislikes, tempLimits: tempLimits(), today: today() };
   }
 
   // ---------- 오늘 코디 ----------
@@ -200,7 +201,7 @@
       <div class="actions">
         <button class="btn primary grow" data-wear="${ids}">오늘 이걸 입어요</button>
         <button class="btn" data-fb="1" data-pair="${combo.top.id}|${combo.bottom.id}" aria-label="좋아요">👍</button>
-        <button class="btn" data-fb="-1" data-pair="${combo.top.id}|${combo.bottom.id}" aria-label="싫어요">👎</button>
+        <button class="btn" data-dislike="${ids}" aria-label="싫어요">👎</button>
       </div>
     </section>`;
   }
@@ -633,7 +634,8 @@
         <p class="small muted">전신 사진을 올리고 입은 옷을 옷장에서 고르면, 채널 가이드로 좋은 점과 아쉬운 점을 알려 줍니다.
           별점과 이유를 남기면 가이드와 부합하는 코디를 추천에서 우선합니다. 사진은 기록용이며, 평가는 고른 옷을 기준으로 합니다.</p>
         <div class="actions"><button class="btn primary grow" data-act="wornadd">입은 코디 기록하기</button></div></section>
-      ${state.worn.length ? state.worn.map(wornCard).join('') : '<section class="card empty">아직 기록이 없습니다.</section>'}`;
+      ${state.worn.length ? state.worn.map(wornCard).join('') : '<section class="card empty">아직 입은 코디 기록이 없습니다.</section>'}
+      ${dislikeList()}`;
   }
 
   function wornForm(rec, isNew) {
@@ -713,6 +715,99 @@
   function newWorn() {
     return { id: `w${Date.now()}${Math.random().toString(36).slice(2, 6)}`, kind: 'worn', date: today(), theme: state.theme,
       items: [], photo: null, rating: null, chips: [], memo: '', weather: null };
+  }
+
+  // ---------- 조합 피드백: 어떤 아이템이 왜 마음에 들지 않는지 ----------
+  const WHY = [['color', '색이 안 어울림'], ['style', '분위기·격식이 안 맞음'], ['hot', '이 날씨엔 더움'], ['cold', '이 날씨엔 추움'],
+    ['fit', '핏·사이즈가 불편함'], ['item', '이 옷 자체가 내키지 않음'], ['other', '기타']];
+  const whyName = (id) => (WHY.find((x) => x[0] === id) || [0, id])[1];
+  const WHY_EFFECT = {
+    color: '함께였던 옷, 그리고 같은 색의 다른 옷과는 덜 묶습니다.',
+    style: '함께였던 옷, 그리고 같은 종류의 다른 옷과는 덜 묶습니다.',
+    hot: '이 정도 기온부터는 이 옷을 추천하지 않습니다. 더 서늘한 날에만 나옵니다.',
+    cold: '이 정도 기온까지는 이 옷을 추천하지 않습니다. 더 따뜻한 날에만 나옵니다.',
+    fit: '이 옷이 들어간 조합을 전반적으로 뒤로 미룹니다.',
+    item: '이 옷이 들어간 조합을 전반적으로 뒤로 미룹니다.',
+    other: '함께였던 옷과는 덜 묶습니다. 메모는 기록으로 남깁니다.',
+  };
+
+  // 덥다·춥다 사유를 옷별 기온 한계로 바꾼다. 덥다고 한 기온(feel)에서는 다시 나오지 않도록
+  // 그보다 3℃ 낮은 곳을 상한으로, 춥다고 한 기온보다 3℃ 높은 곳을 하한으로 둔다.
+  function tempLimits() {
+    const out = {};
+    for (const r of state.settings.dislikes) {
+      if (r.feel == null) continue;
+      const lim = out[r.item] || (out[r.item] = {});
+      if (r.reason === 'hot') lim.max = Math.min(lim.max == null ? 99 : lim.max, r.feel - 3);
+      if (r.reason === 'cold') lim.min = Math.max(lim.min == null ? -99 : lim.min, r.feel + 3);
+    }
+    return out;
+  }
+
+  function dislikeForm(ids) {
+    const parts = ids.map((id) => state.items.find((i) => i.id === id)).filter(Boolean);
+    const picked = new Set();
+    let reason = null;
+    const draw = (memo = '') => {
+      sheet.innerHTML = `<form class="form" method="dialog" id="dislikeForm">
+        <h2>어떤 아이템이 마음에 들지 않나요?</h2>
+        <p class="small muted">이 조합에서 빼고 싶은 아이템을 고르세요. 여러 개를 고를 수 있습니다. 아무것도 고르지 않으면 조합 전체를 추천에서 뺍니다.</p>
+        <div class="choose">${parts.map((p) => `<button type="button" class="${picked.has(p.id) ? 'on' : ''}" data-choose="${p.id}">
+          ${thumb(p)}<span><strong>${C.cat[p.cat].name}</strong><br><span class="small">${esc(itemLabel(p))}</span></span>
+          <span class="mark">${picked.has(p.id) ? '✓' : ''}</span></button>`).join('')}</div>
+        ${picked.size ? `<label>이유<div class="row">${WHY.map(([id, name]) => `<button type="button" class="chip ${reason === id ? 'on' : ''}" data-why="${id}">${name}</button>`).join('')}</div></label>
+          ${reason ? `<div class="note" style="margin-top:0">${WHY_EFFECT[reason]}</div>` : ''}
+          <label>메모 (선택)<input type="text" name="memo" value="${esc(memo)}" placeholder="예: 구두는 츄리닝 바지와 안 어울림"></label>` : ''}
+        <div class="actions"><button type="button" class="btn" data-act="cancel">취소</button>
+          <button type="submit" class="btn primary grow">${picked.size ? '이 아이템 빼고 다시 추천' : '조합 전체가 별로예요'}</button></div></form>`;
+      if (!sheet.open) sheet.showModal();
+      const form = $('#dislikeForm');
+      const memoNow = () => (form.memo ? form.memo.value : memo);
+      form.onclick = (e) => {
+        const b = e.target.closest('button');
+        if (!b) return;
+        if (b.dataset.choose) { picked.has(b.dataset.choose) ? picked.delete(b.dataset.choose) : picked.add(b.dataset.choose); draw(memoNow()); }
+        else if (b.dataset.why) { reason = b.dataset.why; draw(memoNow()); }
+        else if (b.dataset.act === 'cancel') sheet.close();
+      };
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        const top = parts.find((p) => p.cat === 'top'), bottom = parts.find((p) => p.cat === 'bottom');
+        if (!picked.size) {
+          state.settings.feedback[`${top.id}|${bottom.id}`] = -1;
+          toast('이 조합은 추천하지 않습니다');
+        } else {
+          if (!reason) { toast('이유를 하나 골라 주세요'); return; }
+          const text = memoNow().trim();
+          for (const id of picked) {
+            const item = parts.find((p) => p.id === id);
+            state.settings.dislikes.push({
+              id: `d${Date.now()}${Math.random().toString(36).slice(2, 6)}`, item: id, role: item.cat, reason, memo: text,
+              with: parts.filter((p) => p.id !== id && p.cat !== 'acc').map((p) => ({ id: p.id, role: p.cat, color: p.color, type: p.type })),
+              theme: state.theme, date: today(), feel: (currentWeather() || {}).feel,
+            });
+          }
+          toast('반영했습니다. 내 코디 탭에서 기록을 볼 수 있습니다');
+        }
+        saveShared();
+        sheet.close();
+        render();
+      };
+    };
+    draw();
+  }
+
+  function dislikeList() {
+    const list = [...state.settings.dislikes].reverse();
+    if (!list.length) return '';
+    const label = (id) => { const i = state.items.find((x) => x.id === id); return i ? itemLabel(i) : '(삭제된 옷)'; };
+    return `<section class="card"><h2>조합에서 뺀 아이템 <span class="muted small">${list.length}</span></h2>
+      <p class="small muted" style="margin-bottom:8px">오늘 코디에서 싫어요로 남긴 기록입니다. 새 조합을 만들 때 반영되며, 지우면 반영도 사라집니다.</p>
+      <ul class="list">${list.map((r) => `<li><div class="row between"><span><strong>${esc(label(r.item))}</strong>
+          <span class="tag">${whyName(r.reason)}</span></span><button class="btn" data-undislike="${r.id}">지우기</button></div>
+        ${r.with.length && !['fit', 'item', 'hot', 'cold'].includes(r.reason) ? `<div class="small muted">함께였던 옷: ${esc(r.with.map((w) => label(w.id)).join(', '))}</div>` : ''}
+        ${r.memo ? `<div class="small">“${esc(r.memo)}”</div>` : ''}
+        <div class="small muted">${r.date}${r.feel != null && (r.reason === 'hot' || r.reason === 'cold') ? ` · 체감 ${r.feel}℃` : ''} · ${WHY_EFFECT[r.reason]}</div></li>`).join('')}</ul></section>`;
   }
 
   // ---------- 쇼핑 ----------
@@ -882,6 +977,12 @@
     }
     else if (d.item) { state.tab === 'closet' ? editItem(d.item) : quickStatus(d.item); }
     else if (d.wear) { wear(d.wear.split(',')); }
+    else if (d.dislike) { dislikeForm(d.dislike.split(',')); }
+    else if (d.undislike) {
+      state.settings.dislikes = state.settings.dislikes.filter((r) => r.id !== d.undislike);
+      saveShared();
+      render();
+    }
     else if (d.fb) {
       state.settings.feedback[d.pair] = Number(d.fb);
       saveShared();
