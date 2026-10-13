@@ -189,7 +189,7 @@
     const parts = [combo.top, combo.outer, combo.bottom, combo.shoes, ...combo.accs].filter(Boolean);
     const ids = parts.map((p) => p.id).join(',');
     return `<section class="card combo">
-      <div class="head"><h2 style="margin:0">조합 ${index + 1}</h2>
+      <div class="head"><h2><span class="look">LOOK</span>${String(index + 1).padStart(2, '0')}</h2>
         <span class="small muted">${esc([combo.shared, combo.note].filter(Boolean).join(' · '))}</span></div>
       <div class="pieces">${parts.map((p) => `<div class="item"><button class="piece" data-item="${p.id}">${thumb(p)}
         <span class="cap">${esc(itemLabel(p))}</span></button>
@@ -255,12 +255,12 @@
       return `<section class="group"><h2>${cat.name} <span class="muted small">${inCat.length}</span></h2>
         ${types.map((t) => `<button class="fold ${open(t) ? 'on' : ''}" data-fold="${t.id}" aria-expanded="${open(t)}">
             <span>${t.name} <span class="muted small">${inCat.filter((i) => i.type === t.id).length}</span></span>
-            <span class="arrow">${open(t) ? '▴' : '▾'}</span></button>
+            <span class="arrow">${open(t) ? '—' : '＋'}</span></button>
           ${open(t) ? `<div class="grid">${inCat.filter((i) => i.type === t.id).map(card).join('')}</div>` : ''}`).join('')}</section>`;
     }).join('');
     if (list.length) {
       $('#topAction').innerHTML = `<button class="btn viewmode" data-act="closetall" aria-pressed="${state.closetAll}">
-        ${state.closetAll ? '☰ 접어서 보기' : '▦ 전체 펼치기'}</button>`;
+        ${state.closetAll ? '접어서 보기' : '전체 펼치기'}</button>`;
     }
     view.innerHTML = `
       <div class="chips">${cats.map((c) => `<button class="chip ${state.closetCat === c.id ? 'on' : ''}" data-cat="${c.id}">${c.name} ${count(c.id)}</button>`).join('')}</div>
@@ -951,6 +951,8 @@
     document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('on', b.dataset.tab === state.tab));
     $('#subtitle').textContent = SUB[state.tab];
     computePrefs();
+    const now = new Date();
+    $('#eyebrow').textContent = `${now.toLocaleDateString('en-US', { weekday: 'short' })} · ${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
     $('#topAction').innerHTML = '';
     RENDER[state.tab]();
   }
