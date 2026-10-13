@@ -11,7 +11,7 @@
   const dateStr = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const videoUrl = (id) => `https://www.youtube.com/shorts/${id}`;
   const STATUS = { ok: '입을 수 있음', wash: '빨래 중', store: '보관 중' };
-  const DAY_NAMES = ['오늘', '내일', '모레'];
+  const DAY_NAMES = ['오늘'];
 
   const state = {
     tab: 'today', theme: 'out', day: 0, shopView: 'advice', worn: [], wornOpen: null, prefs: { pairs: {}, colors: {} },
@@ -181,8 +181,7 @@
       <div class="note"><strong>${esc(band.label)}</strong> · ${esc(band.wear)}
         <a class="muted" href="${R.src.temp.url}" target="_blank" rel="noopener">근거 영상</a></div>
       ${notes.map((n) => `<div class="note">${esc(n)}</div>`).join('')}
-      ${w.manual ? '<div class="row" style="margin-top:10px"><button class="btn" data-act="reload">실제 날씨로 돌아가기</button></div>' : `
-      <div class="seg" style="margin-top:12px">${DAY_NAMES.map((n, i) => `<button data-day="${i}" class="${state.day === i ? 'on' : ''}">${n}</button>`).join('')}</div>`}
+      ${w.manual ? '<div class="row" style="margin-top:10px"><button class="btn" data-act="reload">실제 날씨로 돌아가기</button></div>' : ''}
     </section>`;
   }
 
