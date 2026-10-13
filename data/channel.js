@@ -1,7 +1,7 @@
 // tools/build_channel_data.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_CHANNEL = {
- "updated": "2026-10-05",
- "count": 325,
+ "updated": "2026-10-13",
+ "count": 332,
  "deals": [
   {
    "id": "aqBWC6p99-g",
@@ -305,6 +305,11 @@ window.CODI_CHANNEL = {
   }
  ],
  "guides": [
+  {
+   "id": "BsAfJ1E9lgo",
+   "title": "남자코디 필승 색조합 정리",
+   "date": "2026-10-09"
+  },
   {
    "id": "43OkC1_ho0c",
    "title": "실패없는 가을코디 색조합 4가지 추천",
@@ -703,14 +708,44 @@ window.CODI_CHANNEL = {
  ],
  "products": [
   {
-   "type": "denimshirt",
-   "name": "[젠플록스x웬즈데이오아시스] (크롭) 퓨어 코튼 웨스턴 데님 셔츠_3COLOR",
-   "id": "aqBWC6p99-g",
-   "date": "2026-10-04"
+   "type": "knit",
+   "name": "10.18 출시예정 웬즈데이오아시스 콜라보 헨리넥 니트 4컬러 중 그레이 컬러입니다! (워셔블 + 크롭인데 2만원대로 출시 할인가 적용에정)",
+   "id": "7u5tPLlrYMA",
+   "date": "2026-10-12"
+  },
+  {
+   "type": "jeans",
+   "name": "[젠플록스X아워데이즈] 세미 커브드 데님 팬츠 [3COLORS]",
+   "id": "7u5tPLlrYMA",
+   "date": "2026-10-12"
+  },
+  {
+   "type": "knit",
+   "name": "10.18 출시예정 웬즈데이오아시스 콜라보 라운드넥 니트 4컬러 중 그레이 컬러입니다! (워셔블 + 크롭인데 2만원대로 출시 할인가 적용에정)",
+   "id": "3zaJxgATJOM",
+   "date": "2026-10-11"
   },
   {
    "type": "chino",
    "name": "[젠플록스X아워데이즈] 세미 커브드 치노 팬츠 [3COLORS]",
+   "id": "3zaJxgATJOM",
+   "date": "2026-10-11"
+  },
+  {
+   "type": "sneakers",
+   "name": "로맨틱무브 보울러 스니커즈 R25M200 (워싱 블랙)",
+   "id": "usHjeUcODvs",
+   "date": "2026-10-11"
+  },
+  {
+   "type": "knit",
+   "name": "10.18 출시예정 웬즈데이오아시스 콜라보 헨리넥 니트 4컬러 중 모카브라운 컬러입니다! (워셔블 + 크롭인데 2만원대로 출시 할인가 적용에정)",
+   "id": "CkAtyp9R__8",
+   "date": "2026-10-07"
+  },
+  {
+   "type": "denimshirt",
+   "name": "[젠플록스x웬즈데이오아시스] (크롭) 퓨어 코튼 웨스턴 데님 셔츠_3COLOR",
    "id": "aqBWC6p99-g",
    "date": "2026-10-04"
   },
@@ -719,12 +754,6 @@ window.CODI_CHANNEL = {
    "name": "[젠플록스X수아레] 데일리 라운드 크롭 가디건 - 5 COLOR",
    "id": "aqBWC6p99-g",
    "date": "2026-10-04"
-  },
-  {
-   "type": "jeans",
-   "name": "[젠플록스X아워데이즈] 세미 커브드 데님 팬츠 [3COLORS]",
-   "id": "43OkC1_ho0c",
-   "date": "2026-10-02"
   },
   {
    "type": "padding",
@@ -1101,12 +1130,6 @@ window.CODI_CHANNEL = {
   {
    "type": "jeans",
    "name": "[노미스 X 인템포무드] 빈티지 스트레이트 데님_워시드블랙",
-   "id": "TeGFRYuTV9Y",
-   "date": "2026-09-11"
-  },
-  {
-   "type": "sneakers",
-   "name": "로맨틱무브 보울러 스니커즈 R25M200 (워싱 블랙)",
    "id": "TeGFRYuTV9Y",
    "date": "2026-09-11"
   },
