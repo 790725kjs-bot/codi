@@ -1,6 +1,6 @@
 // tools/build_basics.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_BASICS = {
- "updated": "2026-10-13",
+ "updated": "2026-10-15",
  "title": "기본템 총정리 : 30대 중반~40대 이상",
  "listUrl": "https://www.musinsa.com/curator/shop/dqugUZ?curationId=01KVQSM6MFV290MVY7NGCVF1R3",
  "guideUrl": "https://buttered-umbra-df5.notion.site/2026-3-0-388bbedf246a80c69a7cd7aeff8a2498",
@@ -23,6 +23,15 @@ window.CODI_BASICS = {
        "soldOut": false
       },
       {
+       "brand": "캘빈클라인 진",
+       "name": "[2PACK] 남녀공용 로고 솔리드 반팔 티셔츠 4RAB217 3GE",
+       "img": "https://image.msscdn.net/thumbnails/images/goods_img/20210322/1856360/1856360_17768205577543_500.jpg",
+       "url": "https://www.musinsa.com/products/1856360?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XjftndO6k",
+       "price": 99000,
+       "normal": 99000,
+       "soldOut": false
+      },
+      {
        "brand": "폴로 랄프 로렌",
        "name": "[적립금 10%] 커스텀 슬림 핏 코튼 티셔츠 - 블랙",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20191024/1201415/1201415_2_500.jpg",
@@ -39,15 +48,6 @@ window.CODI_BASICS = {
        "price": 139000,
        "normal": 139000,
        "soldOut": false
-      },
-      {
-       "brand": "캘빈클라인 진",
-       "name": "[2PACK] 남녀공용 로고 솔리드 반팔 티셔츠 4RAB217 3GE",
-       "img": "https://image.msscdn.net/thumbnails/images/goods_img/20210322/1856360/1856360_17768205577543_500.jpg",
-       "url": "https://www.musinsa.com/products/1856360?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XjftndO6k",
-       "price": 99000,
-       "normal": 99000,
-       "soldOut": true
       }
      ]
     },
@@ -196,7 +196,7 @@ window.CODI_BASICS = {
        "name": "워셔블 케이블 반팔 니트 - 16 COLOR",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20240306/3927583/3927583_17791544001352_500.jpg",
        "url": "https://www.musinsa.com/products/3927583?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XUsiemi6W",
-       "price": 26550,
+       "price": 29500,
        "normal": 59000,
        "soldOut": false
       }
@@ -289,7 +289,7 @@ window.CODI_BASICS = {
        "name": "DEN0861 Selvedge Wide Fit (Mid Indigo)",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20210315/1844467/1844467_17182597173079_500.jpg",
        "url": "https://www.musinsa.com/products/1844467?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=Xsr0r504M",
-       "price": 89110,
+       "price": 99900,
        "normal": 126000,
        "soldOut": false
       },
@@ -564,7 +564,7 @@ window.CODI_BASICS = {
        "name": "슈퍼스타 II - 블랙 / IH1612",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20260311/6114140/6114140_17732832564949_500.jpg",
        "url": "https://www.musinsa.com/products/6114140?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XN3BVSWEN",
-       "price": 149000,
+       "price": 103990,
        "normal": 149000,
        "soldOut": false
       },
@@ -689,7 +689,7 @@ window.CODI_BASICS = {
        "name": "코튼 헨리넥 워셔블 니트 - 6 COLOR",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20250516/5119025/5119025_17508193690665_500.jpg",
        "url": "https://www.musinsa.com/products/5119025?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XO0Acn1zu",
-       "price": 27450,
+       "price": 29900,
        "normal": 49000,
        "soldOut": false
       },
@@ -736,7 +736,7 @@ window.CODI_BASICS = {
        "name": "린넨 라이크 세미 와이드 밴딩 팬츠 - 10 COLOR",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20210428/1924274/1924274_17152551704806_500.jpg",
        "url": "https://www.musinsa.com/products/1924274?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=X8Ez6S0op",
-       "price": 28250,
+       "price": 29900,
        "normal": 33000,
        "soldOut": false
       }

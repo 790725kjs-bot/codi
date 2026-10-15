@@ -1,7 +1,7 @@
 // tools/build_channel_data.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_CHANNEL = {
- "updated": "2026-10-13",
- "count": 332,
+ "updated": "2026-10-15",
+ "count": 334,
  "deals": [
   {
    "id": "aqBWC6p99-g",
@@ -710,14 +710,20 @@ window.CODI_CHANNEL = {
   {
    "type": "knit",
    "name": "10.18 출시예정 웬즈데이오아시스 콜라보 헨리넥 니트 4컬러 중 그레이 컬러입니다! (워셔블 + 크롭인데 2만원대로 출시 할인가 적용에정)",
-   "id": "7u5tPLlrYMA",
-   "date": "2026-10-12"
+   "id": "ydUstKu36vw",
+   "date": "2026-10-14"
   },
   {
    "type": "jeans",
    "name": "[젠플록스X아워데이즈] 세미 커브드 데님 팬츠 [3COLORS]",
-   "id": "7u5tPLlrYMA",
-   "date": "2026-10-12"
+   "id": "qO32x3t8Ew4",
+   "date": "2026-10-13"
+  },
+  {
+   "type": "sneakers",
+   "name": "로맨틱무브 보울러 스니커즈 R25M200 (워싱 블랙)",
+   "id": "qO32x3t8Ew4",
+   "date": "2026-10-13"
   },
   {
    "type": "knit",
@@ -729,12 +735,6 @@ window.CODI_CHANNEL = {
    "type": "chino",
    "name": "[젠플록스X아워데이즈] 세미 커브드 치노 팬츠 [3COLORS]",
    "id": "3zaJxgATJOM",
-   "date": "2026-10-11"
-  },
-  {
-   "type": "sneakers",
-   "name": "로맨틱무브 보울러 스니커즈 R25M200 (워싱 블랙)",
-   "id": "usHjeUcODvs",
    "date": "2026-10-11"
   },
   {
