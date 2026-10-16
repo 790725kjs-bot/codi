@@ -1,6 +1,6 @@
 // tools/build_basics.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_BASICS = {
- "updated": "2026-10-15",
+ "updated": "2026-10-16",
  "title": "기본템 총정리 : 30대 중반~40대 이상",
  "listUrl": "https://www.musinsa.com/curator/shop/dqugUZ?curationId=01KVQSM6MFV290MVY7NGCVF1R3",
  "guideUrl": "https://buttered-umbra-df5.notion.site/2026-3-0-388bbedf246a80c69a7cd7aeff8a2498",
@@ -123,7 +123,7 @@ window.CODI_BASICS = {
        "name": "[서강준 PICK] 스테이블 린넨 미니멀 셔츠 [5color]",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20200619/1491139/1491139_17763938455568_500.jpg",
        "url": "https://www.musinsa.com/products/1491139?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XHC99QIRK",
-       "price": 49500,
+       "price": 44000,
        "normal": 55000,
        "soldOut": false
       },
@@ -132,7 +132,7 @@ window.CODI_BASICS = {
        "name": "[서강준 PICK] 스테이블 린넨 스탠드 카라 셔츠 [2color]",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20190503/1033853/1033853_17763934810339_500.jpg",
        "url": "https://www.musinsa.com/products/1033853?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XIKMUQ8N8",
-       "price": 49500,
+       "price": 44000,
        "normal": 55000,
        "soldOut": false
       },
@@ -430,7 +430,7 @@ window.CODI_BASICS = {
        "name": "[젠플록스X드로우핏] 와이드 커브드 린넨 데님 팬츠 [4color]",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20260407/6265580/6265580_17763915552789_500.jpg",
        "url": "https://www.musinsa.com/products/6265580?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XkMl1UctV",
-       "price": 53100,
+       "price": 47200,
        "normal": 59000,
        "soldOut": false
       },
@@ -491,7 +491,7 @@ window.CODI_BASICS = {
        "name": "뉴 러그 로퍼 R24H212 (홀스레더 블랙)",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20240117/3800064/3800064_17255275842427_500.jpg",
        "url": "https://www.musinsa.com/products/3800064?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XnPHEUS5g",
-       "price": 119000,
+       "price": 159600,
        "normal": 189000,
        "soldOut": false
       },
@@ -500,7 +500,7 @@ window.CODI_BASICS = {
        "name": "모던 프렙 페니 MODERN PREP PENNY / BLACK(RM0072)",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20240320/3972398/3972398_17449427526651_500.jpg",
        "url": "https://www.musinsa.com/products/3972398?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XVU4D1LWD",
-       "price": 202500,
+       "price": 225000,
        "normal": 250000,
        "soldOut": false
       },
@@ -509,7 +509,7 @@ window.CODI_BASICS = {
        "name": "OVATE - 500 (a) / BLACK",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20230918/3568935/3568935_16995104812799_500.jpg",
        "url": "https://www.musinsa.com/products/3568935?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=Xp0Y7ZF1I",
-       "price": 173400,
+       "price": 245650,
        "normal": 289000,
        "soldOut": false
       }
@@ -523,7 +523,7 @@ window.CODI_BASICS = {
        "name": "dress (black)",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20230301/3115168/3115168_17682097357934_500.jpg",
        "url": "https://www.musinsa.com/products/3115168?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XubNsxOda",
-       "price": 161100,
+       "price": 169000,
        "normal": 179000,
        "soldOut": false
       },
@@ -532,7 +532,7 @@ window.CODI_BASICS = {
        "name": "보울러 스니커즈 R25M200 (워싱 블랙)",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20250124/4743478/4743478_17618745133342_500.jpg",
        "url": "https://www.musinsa.com/products/4743478?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XbI1UBLHf",
-       "price": 143000,
+       "price": 146780,
        "normal": 179000,
        "soldOut": false
       },
@@ -541,7 +541,7 @@ window.CODI_BASICS = {
        "name": "WEAKER - 833 (a) / BLACK",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20250625/5206545/5206545_17508319017853_500.jpg",
        "url": "https://www.musinsa.com/products/5206545?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=Xj7BPbDZj",
-       "price": 124740,
+       "price": 179550,
        "normal": 189000,
        "soldOut": false
       }
@@ -555,7 +555,7 @@ window.CODI_BASICS = {
        "name": "몬트리올 - 블랙:카본 / IH7249",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20260310/6105243/6105243_17731928684479_500.jpg",
        "url": "https://www.musinsa.com/products/6105243?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XDM2KBJHF",
-       "price": 66990,
+       "price": 88990,
        "normal": 149000,
        "soldOut": false
       },
@@ -573,7 +573,7 @@ window.CODI_BASICS = {
        "name": "[+4.5cm] ATHLETIC - 312(p) / LEATHER",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20260319/6159731/6159731_17748491389243_500.jpg",
        "url": "https://www.musinsa.com/products/6159731?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=X6PIT4OFA",
-       "price": 112590,
+       "price": 139000,
        "normal": 139000,
        "soldOut": false
       }
@@ -587,7 +587,7 @@ window.CODI_BASICS = {
        "name": "러그 더비 R26H920 / 홀스레더블랙",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20260304/6078106/6078106_17756459199850_500.jpg",
        "url": "https://www.musinsa.com/products/6078106?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XL5P04N0R",
-       "price": 103000,
+       "price": 141750,
        "normal": 189000,
        "soldOut": false
       },
@@ -596,7 +596,7 @@ window.CODI_BASICS = {
        "name": "SHOWER - 808 (a) / BLACK",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20230504/3276429/3276429_17770163028829_500.jpg",
        "url": "https://www.musinsa.com/products/3276429?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=X8ltHLsiA",
-       "price": 173400,
+       "price": 245650,
        "normal": 289000,
        "soldOut": false
       },
@@ -605,7 +605,7 @@ window.CODI_BASICS = {
        "name": "P.BRUTAL-649(p)",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20250807/5301413/5301413_17684788894537_500.jpg",
        "url": "https://www.musinsa.com/products/5301413?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XFskEYYwB",
-       "price": 339150,
+       "price": 359100,
        "normal": 399000,
        "soldOut": false
       }
@@ -759,7 +759,7 @@ window.CODI_BASICS = {
        "name": "[패션플래닛X드로우핏] 세미 와이드 치노 팬츠 [6color]",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20250728/5275962/5275962_17564335392185_500.jpg",
        "url": "https://www.musinsa.com/products/5275962?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XLJIZeNLY",
-       "price": 59400,
+       "price": 56100,
        "normal": 66000,
        "soldOut": false
       },
@@ -800,7 +800,7 @@ window.CODI_BASICS = {
        "name": "팬츠 Olive",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20180309/732698/732698_16807553592919_500.jpg",
        "url": "https://www.musinsa.com/products/732698?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XGuNotBNU",
-       "price": 96750,
+       "price": 64500,
        "normal": 129000,
        "soldOut": false
       }
@@ -965,7 +965,7 @@ window.CODI_BASICS = {
        "name": "(공용) 재팬 FGL 팩터 쇼츠 6.0 - 팬텀 / FOA40881801N",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20260416/6319588/6319588_17791526503703_500.jpg",
        "url": "https://www.musinsa.com/products/6319588?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XJYNU6IM6",
-       "price": 109990,
+       "price": 138000,
        "normal": 138000,
        "soldOut": false
       },
@@ -1049,7 +1049,7 @@ window.CODI_BASICS = {
        "name": "SP1024 아이론스텝 부츠 풀그레인 레더 브라운",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20241024/4556124/4556124_17912686261812_500.png",
        "url": "https://www.musinsa.com/products/4556124?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XH4T60rO8",
-       "price": 132300,
+       "price": 153090,
        "normal": 189000,
        "soldOut": false
       },
@@ -1067,7 +1067,7 @@ window.CODI_BASICS = {
        "name": "아이언 레인저 8111 - 앰버 하니스",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20240418/4066143/4066143_17134170116471_500.jpg",
        "url": "https://www.musinsa.com/products/4066143?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XtQ9Ovu2y",
-       "price": 538200,
+       "price": 598000,
        "normal": 598000,
        "soldOut": false
       }
@@ -1117,7 +1117,7 @@ window.CODI_BASICS = {
      "name": "포 시즌 첼시 레인부츠 R23M501 (블랙)",
      "img": "https://image.msscdn.net/thumbnails/images/goods_img/20231108/3694945/3694945_16994115794473_500.jpg",
      "url": "https://www.musinsa.com/products/3694945?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=Xj8gtcU5S",
-     "price": 79000,
+     "price": 95000,
      "normal": 132000,
      "soldOut": false
     }
