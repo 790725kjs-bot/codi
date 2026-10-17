@@ -1,8 +1,13 @@
 // tools/build_channel_data.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_CHANNEL = {
- "updated": "2026-10-16",
- "count": 334,
+ "updated": "2026-10-17",
+ "count": 336,
  "deals": [
+  {
+   "id": "6zSDACUYORI",
+   "title": "아는 사람들만 아는 시크릿세일",
+   "date": "2026-10-16"
+  },
   {
    "id": "aqBWC6p99-g",
    "title": "무신사 애프터세일 끝나기 전에 꼭보는 게 좋을 듯",
@@ -297,11 +302,6 @@ window.CODI_CHANNEL = {
    "id": "u8cD-Em5rYU",
    "title": "비긴202 70% 할인 꿀템 4가지 (리퍼브제품s)",
    "date": "2026-01-01"
-  },
-  {
-   "id": "4KUCO3wmOdk",
-   "title": "이렇게 할인한 적은 없었던,, 무신사 꿀템 4가지",
-   "date": "2025-12-30"
   }
  ],
  "guides": [
@@ -707,6 +707,36 @@ window.CODI_CHANNEL = {
   }
  ],
  "products": [
+  {
+   "type": "hoodie",
+   "name": "마인드브릿지 중경량 시어쉘 오버핏 후드 경량 패딩 점퍼 - 2color",
+   "id": "K96twI0j5Oc",
+   "date": "2026-10-16"
+  },
+  {
+   "type": "knit",
+   "name": "[젠플록스 콜라보] 워셔블 컴포트 세미 크롭 라운드 니트_5COLOR",
+   "id": "6zSDACUYORI",
+   "date": "2026-10-16"
+  },
+  {
+   "type": "knit",
+   "name": "[젠플록스 콜라보] 워셔블 컴포트 세미 크롭 헨리넥 니트_4COLOR",
+   "id": "6zSDACUYORI",
+   "date": "2026-10-16"
+  },
+  {
+   "type": "chino",
+   "name": "아워데이즈 [젠플록스X아워데이즈] 세미 커브드 치노 팬츠 [3COLORS]",
+   "id": "6zSDACUYORI",
+   "date": "2026-10-16"
+  },
+  {
+   "type": "derby",
+   "name": "페이드 워싱 더비 R25M003 (워싱블랙)",
+   "id": "6zSDACUYORI",
+   "date": "2026-10-16"
+  },
   {
    "type": "knit",
    "name": "10.18 출시예정 웬즈데이오아시스 콜라보 헨리넥 니트 4컬러 중 그레이 컬러입니다! (워셔블 + 크롭인데 2만원대로 출시 할인가 적용에정)",

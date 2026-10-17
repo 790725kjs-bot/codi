@@ -1,6 +1,6 @@
 // tools/build_basics.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_BASICS = {
- "updated": "2026-10-16",
+ "updated": "2026-10-17",
  "title": "기본템 총정리 : 30대 중반~40대 이상",
  "listUrl": "https://www.musinsa.com/curator/shop/dqugUZ?curationId=01KVQSM6MFV290MVY7NGCVF1R3",
  "guideUrl": "https://buttered-umbra-df5.notion.site/2026-3-0-388bbedf246a80c69a7cd7aeff8a2498",
@@ -965,7 +965,7 @@ window.CODI_BASICS = {
        "name": "(공용) 재팬 FGL 팩터 쇼츠 6.0 - 팬텀 / FOA40881801N",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20260416/6319588/6319588_17791526503703_500.jpg",
        "url": "https://www.musinsa.com/products/6319588?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XJYNU6IM6",
-       "price": 138000,
+       "price": 123990,
        "normal": 138000,
        "soldOut": false
       },
