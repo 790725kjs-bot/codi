@@ -1,8 +1,13 @@
 // tools/build_channel_data.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_CHANNEL = {
- "updated": "2026-10-17",
- "count": 336,
+ "updated": "2026-10-24",
+ "count": 343,
  "deals": [
+  {
+   "id": "dtCd76wqecQ",
+   "title": "무탠다드 슈퍼세일 꿀템 총정리",
+   "date": "2026-10-23"
+  },
   {
    "id": "6zSDACUYORI",
    "title": "아는 사람들만 아는 시크릿세일",
@@ -297,14 +302,14 @@ window.CODI_CHANNEL = {
    "id": "jNwJ7iYZbnw",
    "title": "무신사 멤버스데이 개이득 신발 4가지 추천 !",
    "date": "2026-01-02"
-  },
-  {
-   "id": "u8cD-Em5rYU",
-   "title": "비긴202 70% 할인 꿀템 4가지 (리퍼브제품s)",
-   "date": "2026-01-01"
   }
  ],
  "guides": [
+  {
+   "id": "Y-zZghKHLoM",
+   "title": "기본템 니트는 이거 챙기고 시작하시면 됩니다.",
+   "date": "2026-10-18"
+  },
   {
    "id": "BsAfJ1E9lgo",
    "title": "남자코디 필승 색조합 정리",
@@ -708,6 +713,84 @@ window.CODI_CHANNEL = {
  ],
  "products": [
   {
+   "type": "knit",
+   "name": "[젠플록스 콜라보] 워셔블 컴포트 세미 크롭 헨리넥 니트_4COLOR",
+   "id": "dtCd76wqecQ",
+   "date": "2026-10-23"
+  },
+  {
+   "type": "coat",
+   "name": "11.1 출시 디미트리블랙 콜라보 캐시미어 코트입니다! 엄청 가성비 좋게 레전드템으로 준비했으니 많관부입니다 ㅎㅎ",
+   "id": "dtCd76wqecQ",
+   "date": "2026-10-23"
+  },
+  {
+   "type": "knit",
+   "name": "웬즈데이오아시스 [젠플록스 콜라보] 워셔블 컴포트 세미 크롭 헨리넥 니트_4COLOR",
+   "id": "dtCd76wqecQ",
+   "date": "2026-10-23"
+  },
+  {
+   "type": "chino",
+   "name": "[젠플록스X아워데이즈] 세미 커브드 치노 팬츠 [3COLORS]",
+   "id": "dtCd76wqecQ",
+   "date": "2026-10-23"
+  },
+  {
+   "type": "coat",
+   "name": "11.1 출시 디미트리블랙 콜라보 캐시미어 코트입니다! 엄청 가성비 좋게 준비했으니 많관부입니다 ㅎㅎ",
+   "id": "dtCd76wqecQ",
+   "date": "2026-10-23"
+  },
+  {
+   "type": "knit",
+   "name": "[젠플록스 콜라보] 워셔블 컴포트 세미 크롭 라운드넥 니트_4COLOR",
+   "id": "ll6K3c7640U",
+   "date": "2026-10-22"
+  },
+  {
+   "type": "coat",
+   "name": "11.1 출시 디미트리블랙 콜라보 캐시미어 발마칸 코트",
+   "id": "ll6K3c7640U",
+   "date": "2026-10-22"
+  },
+  {
+   "type": "coat",
+   "name": "11.1 출시 디미트리블랙 콜라보 코트",
+   "id": "ll6K3c7640U",
+   "date": "2026-10-22"
+  },
+  {
+   "type": "knit",
+   "name": "웬즈데이오아시스 워셔블 컴포트 세미 크롭 라운드 니트_5COLOR",
+   "id": "ll6K3c7640U",
+   "date": "2026-10-22"
+  },
+  {
+   "type": "jeans",
+   "name": "[젠플록스X아워데이즈] 세미 커브드 데님 팬츠 [3COLORS]",
+   "id": "j69_IoYdwhc",
+   "date": "2026-10-19"
+  },
+  {
+   "type": "sneakers",
+   "name": "로맨틱무브 보울러 스니커즈 R25M200 (워싱 블랙)",
+   "id": "j69_IoYdwhc",
+   "date": "2026-10-19"
+  },
+  {
+   "type": "jeans",
+   "name": "아워데이즈 세미 커브드 데님 팬츠 [3COLORS]",
+   "id": "Y-zZghKHLoM",
+   "date": "2026-10-18"
+  },
+  {
+   "type": "chino",
+   "name": "아워데이즈 세미 커브드 치노 팬츠 [3COLORS]",
+   "id": "Y-zZghKHLoM",
+   "date": "2026-10-18"
+  },
+  {
    "type": "hoodie",
    "name": "마인드브릿지 중경량 시어쉘 오버핏 후드 경량 패딩 점퍼 - 2color",
    "id": "K96twI0j5Oc",
@@ -716,12 +799,6 @@ window.CODI_CHANNEL = {
   {
    "type": "knit",
    "name": "[젠플록스 콜라보] 워셔블 컴포트 세미 크롭 라운드 니트_5COLOR",
-   "id": "6zSDACUYORI",
-   "date": "2026-10-16"
-  },
-  {
-   "type": "knit",
-   "name": "[젠플록스 콜라보] 워셔블 컴포트 세미 크롭 헨리넥 니트_4COLOR",
    "id": "6zSDACUYORI",
    "date": "2026-10-16"
   },
@@ -744,26 +821,8 @@ window.CODI_CHANNEL = {
    "date": "2026-10-14"
   },
   {
-   "type": "jeans",
-   "name": "[젠플록스X아워데이즈] 세미 커브드 데님 팬츠 [3COLORS]",
-   "id": "qO32x3t8Ew4",
-   "date": "2026-10-13"
-  },
-  {
-   "type": "sneakers",
-   "name": "로맨틱무브 보울러 스니커즈 R25M200 (워싱 블랙)",
-   "id": "qO32x3t8Ew4",
-   "date": "2026-10-13"
-  },
-  {
    "type": "knit",
    "name": "10.18 출시예정 웬즈데이오아시스 콜라보 라운드넥 니트 4컬러 중 그레이 컬러입니다! (워셔블 + 크롭인데 2만원대로 출시 할인가 적용에정)",
-   "id": "3zaJxgATJOM",
-   "date": "2026-10-11"
-  },
-  {
-   "type": "chino",
-   "name": "[젠플록스X아워데이즈] 세미 커브드 치노 팬츠 [3COLORS]",
    "id": "3zaJxgATJOM",
    "date": "2026-10-11"
   },
