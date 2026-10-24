@@ -1,5 +1,6 @@
 (function () {
   const C = window.CODI_CATALOG, R = window.CODI_RULES, CH = window.CODI_CHANNEL, BASICS = window.CODI_BASICS;
+  const RULES_LOG = window.CODI_RULES_LOG || [];
   const E = window.CODI_ENGINE;
   const { DB, loadSettings, saveSettings, exportAll, importAll } = window.CODI_DB;
   const SYNC = window.CODI_SYNC, BG = window.CODI_BG;
@@ -940,8 +941,10 @@
           <button class="btn" data-act="import">백업에서 복원</button></div>
         <input id="importFile" type="file" accept="application/json" hidden></section>
       <section class="card"><h2>코디 기준</h2>
-        <p class="small muted">유튜브 채널 maison_jenflox 쇼츠 ${CH.count}개를 ${CH.updated}에 수집해 만든 규칙을 씁니다.
-          옷 ${state.items.length}벌 등록됨. 이 어플은 AI 유료 호출을 쓰지 않아 추가 요금이 없습니다.</p></section>`;
+        <p class="small muted">유튜브 채널 maison_jenflox 쇼츠를 매일 수집합니다 (지금까지 ${CH.count}개, ${CH.updated} 갱신).
+          코디 규칙(룰북)은 매달 1일 새 가이드 영상을 읽고 반영합니다. 옷 ${state.items.length}벌 등록됨.</p>
+        ${RULES_LOG.length ? `<h3 style="margin-top:14px">룰북 갱신 기록</h3><ul class="list" style="margin-top:8px">${RULES_LOG.slice(0, 6).map((r) => `<li class="small">
+          <strong>${esc(r.date)}</strong> <span class="muted">(${esc(r.reviewedUntil)} 영상까지 확인)</span><div>${esc(r.summary)}</div></li>`).join('')}</ul>` : ''}</section>`;
   }
 
   // ---------- 라우팅과 이벤트 ----------

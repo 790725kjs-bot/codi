@@ -146,7 +146,7 @@
   };
 
   // 3색 꿀조합. 상의·아우터·하의(·신발)에 세 색이 모두 들어가면 가산
-  const t = (id, ...colors) => ({ colors, src: v(id, '3색 꿀조합') });
+  const t = (id, ...colors) => ({ colors, src: v(id, '색 꿀조합') });
   const trios = [
     t('43OkC1_ho0c', 'brown', 'burgundy', 'black'),
     t('43OkC1_ho0c', 'darkdenim', 'beige', 'khaki'),
@@ -173,6 +173,12 @@
     t('W6oG-lh3EfI', 'navy', 'beige', 'ivory'),
     t('W6oG-lh3EfI', 'white', 'lightdenim', 'red'),
     t('W6oG-lh3EfI', 'beige', 'brown', 'khaki'),
+    // 2026-10 추가: 남자코디 필승 색조합 정리 (4색 조합). 프렌치 블루·라이트 블루 → 블루, 인디고 → 진청,
+    // 세이지 그린 → 민트로 맞췄다 (세이지 그린은 어플 색상표에 없어 가장 가까운 색으로 본 것)
+    t('BsAfJ1E9lgo', 'white', 'khaki', 'blue', 'brown'),
+    t('BsAfJ1E9lgo', 'darkdenim', 'beige', 'khaki', 'brown'),
+    t('BsAfJ1E9lgo', 'white', 'burgundy', 'charcoal', 'black'),
+    t('BsAfJ1E9lgo', 'mint', 'gray', 'blue', 'white'),
   ];
 
   // 옷 종류 조합(필승조합·하객룩·봄코디 영상). 종류가 모두 맞으면 가산
@@ -196,6 +202,9 @@
     o('wzrendJIGhQ', '벚꽃 코디', ['cottonjacket'], ['shirt', 'longsleeve'], ['chino'], ['sneakers']),
     o('MID1zGQmssk', '여름 하객룩', null, ['sknit', 'polo'], ['slacks'], ['derby']),
     o('MID1zGQmssk', '여름 하객룩', null, ['sshirt'], ['slacks', 'chino'], ['loafer', 'derby']),
+    // 2026-10 추가: 크리에이터 콜라보 리뷰 — "후드집업은 경량패딩이랑 같이 입으면 맛있다"
+    { ...o('K96twI0j5Oc', '겹쳐 입기 추천', ['lightpadding'], ['sweatshirt', 'hoodie', 'longsleeve', 'tee'], ['jeans', 'sweatpants', 'cargo'], ['sneakers', 'running']),
+      mid: ['ziphoodie', 'thinzip'] },
   ];
 
   // 피부톤별로 얼굴 가까이에 두면 좋은 상의색 (영상 화면의 19가지 조합에서 옮김)

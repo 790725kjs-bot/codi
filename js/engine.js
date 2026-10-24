@@ -97,7 +97,7 @@
     const trio = trioHit(worn.concat(shoes ? [shoes.color] : []));
     if (trio) {
       score += 4;
-      reasons.push({ text: `3색 꿀조합: ${trio.colors.map(colorName).join(' + ')}`, src: trio.src });
+      reasons.push({ text: `${trio.colors.length}색 꿀조합: ${trio.colors.map(colorName).join(' + ')}`, src: trio.src });
     }
     if (new Set(worn).size > 3) {
       score -= 2;
@@ -108,7 +108,8 @@
     const has = (list, item) => (list == null ? !item : !!item && list.includes(item.type));
     // 조합표의 '아우터' 칸은 가디건처럼 이너 아우터에 속한 옷도 들어 있어 두 겹 중 하나만 맞으면 된다
     const layer = (list) => (list == null ? !outer && !mid : [outer, mid].some((x) => x && list.includes(x.type)));
-    const outfit = R.outfits.find((f) => layer(f.outer) && has(f.top, top) && has(f.bottom, bottom)
+    // mid 칸이 있는 조합표는 겹쳐 입기 조합: 겉옷과 이너 아우터가 각각 맞아야 한다
+    const outfit = R.outfits.find((f) => (f.mid ? has(f.outer, outer) && has(f.mid, mid) : layer(f.outer)) && has(f.top, top) && has(f.bottom, bottom)
       && (!shoes || has(f.shoes, shoes)));
     if (outfit) {
       score += 2.5;
