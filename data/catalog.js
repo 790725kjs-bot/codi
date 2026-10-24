@@ -2,6 +2,7 @@
 (function (root) {
   const CATS = [
     { id: 'top', name: '상의' },
+    { id: 'mid', name: '이너 아우터' },
     { id: 'outer', name: '아우터' },
     { id: 'bottom', name: '하의' },
     { id: 'shoes', name: '신발' },
@@ -26,11 +27,11 @@
     { id: 'hoodie', cat: 'top', name: '후드티', desc: '모자 달린 스웻셔츠 (지퍼 없음)', formal: 0, uses: ['out', 'comfy'] },
     { id: 'sleeveless', cat: 'top', name: '민소매', desc: '나시, 소매 없는 티', formal: 0, uses: ['comfy'] },
 
-    { id: 'thincardigan', cat: 'outer', name: '얇은 가디건', desc: '여름·초가을용 얇은 가디건', formal: 2, uses: ['out', 'comfy'] },
-    { id: 'cardigan', cat: 'outer', name: '가디건', desc: '봄가을용 가디건, 니트 집업', formal: 2, uses: ['out', 'comfy'] },
-    { id: 'vest', cat: 'outer', name: '조끼', desc: '니트 조끼, 패딩 조끼 (소매 없는 겉옷)', formal: 1, uses: ['out', 'comfy'] },
-    { id: 'thinzip', cat: 'outer', name: '얇은 후드집업', desc: '얇은 원단의 지퍼 후드', formal: 0, uses: ['out', 'comfy'] },
-    { id: 'ziphoodie', cat: 'outer', name: '후드집업', desc: '기모·두꺼운 지퍼 후드', formal: 0, uses: ['out', 'comfy'] },
+    { id: 'thincardigan', cat: 'mid', name: '얇은 가디건', desc: '여름·초가을용 얇은 가디건. 단독으로도, 아우터 안에도', formal: 2, uses: ['out', 'comfy'] },
+    { id: 'cardigan', cat: 'mid', name: '가디건', desc: '가디건, 니트 집업. 단독으로도, 코트·자켓 안에도', formal: 2, uses: ['out', 'comfy'] },
+    { id: 'vest', cat: 'mid', name: '조끼', desc: '니트 조끼, 패딩 조끼. 셔츠 위나 아우터 안에', formal: 1, uses: ['out', 'comfy'] },
+    { id: 'thinzip', cat: 'mid', name: '얇은 후드집업', desc: '얇은 지퍼 후드. 단독으로도, 바람막이 안에도', formal: 0, uses: ['out', 'comfy'] },
+    { id: 'ziphoodie', cat: 'mid', name: '후드집업', desc: '지퍼 후드. 단독으로도, 코트·패딩 안에도', formal: 0, uses: ['out', 'comfy'] },
     { id: 'tracktop', cat: 'outer', name: '트랙탑', desc: '운동복 느낌의 지퍼 저지 (츄리닝 상의)', formal: 0, uses: ['out', 'comfy'] },
     { id: 'windbreaker', cat: 'outer', name: '바람막이', desc: '얇은 나일론 점퍼, 아노락', formal: 0, uses: ['out', 'comfy'] },
     { id: 'denimjacket', cat: 'outer', name: '데님자켓', desc: '청자켓 (트러커)', formal: 1, uses: ['out'] },

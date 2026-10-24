@@ -53,7 +53,8 @@
 
   // 삭제한 옷은 다른 기기에도 삭제가 전해지도록 표시만 남기고 화면에서 숨긴다
   async function reloadItems() {
-    state.items = (await DB.all('items')).filter((i) => !i.deleted);
+    state.items = (await DB.all('items')).filter((i) => !i.deleted)
+      .map((i) => (C.type[i.type] && C.type[i.type].cat !== i.cat ? { ...i, cat: C.type[i.type].cat } : i));
   }
 
   async function saveItem(item) {
@@ -186,7 +187,7 @@
   }
 
   function comboCard(combo, index) {
-    const parts = [combo.top, combo.outer, combo.bottom, combo.shoes, ...combo.accs].filter(Boolean);
+    const parts = [combo.top, combo.mid, combo.outer, combo.bottom, combo.shoes, ...combo.accs].filter(Boolean);
     const ids = parts.map((p) => p.id).join(',');
     return `<section class="card combo">
       <div class="head"><h2><span class="look">LOOK</span>${String(index + 1).padStart(2, '0')}</h2>
@@ -523,7 +524,7 @@
   // ---------- 내 코디 (실제로 입은 코디 기록과 평가) ----------
   const CHIPS = [['color', '색 조합이 좋아서'], ['comfort', '편해서'], ['fit', '핏이 좋아 보여서'],
     ['praise', '칭찬받아서'], ['weather', '날씨에 맞아서'], ['occasion', '자리에 맞아서']];
-  const ROLES = [['top', '상의'], ['outer', '아우터'], ['bottom', '하의'], ['shoes', '신발']];
+  const ROLES = [['top', '상의'], ['mid', '이너 아우터'], ['outer', '아우터'], ['bottom', '하의'], ['shoes', '신발']];
   const stars = (n) => (n ? '★'.repeat(n) + '☆'.repeat(5 - n) : '별점 없음');
 
   async function reloadWorn() {
