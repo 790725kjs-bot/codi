@@ -1,7 +1,7 @@
 // tools/build_channel_data.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_CHANNEL = {
- "updated": "2026-10-24",
- "count": 343,
+ "updated": "2026-11-02",
+ "count": 351,
  "deals": [
   {
    "id": "dtCd76wqecQ",
@@ -305,6 +305,16 @@ window.CODI_CHANNEL = {
   }
  ],
  "guides": [
+  {
+   "id": "5kuyxAg4JM4",
+   "title": "입문자를 위한 남자 가성비 기본템 정리 (상의)",
+   "date": "2026-10-27"
+  },
+  {
+   "id": "h5Dsfn88kj8",
+   "title": "저렴해졌을때 챙기면 딱인 무탠다드 가성비 기본템 정리",
+   "date": "2026-10-24"
+  },
   {
    "id": "Y-zZghKHLoM",
    "title": "기본템 니트는 이거 챙기고 시작하시면 됩니다.",
@@ -713,16 +723,58 @@ window.CODI_CHANNEL = {
  ],
  "products": [
   {
+   "type": "coat",
+   "name": "[DIMITRI X 젠플록스] 모두의 캐시미어 발마칸 코트_2 COLOR",
+   "id": "ST20Mp90F8s",
+   "date": "2026-10-31"
+  },
+  {
+   "type": "coat",
+   "name": "[DIMITRI X 젠플록스] © 모두의 캐시미어 발마칸 코트_2 COLOR",
+   "id": "ubmuYyd_1EQ",
+   "date": "2026-10-31"
+  },
+  {
+   "type": "jeans",
+   "name": "[젠플록스X아워데이즈] 세미 커브드 데님 팬츠 [3COLORS]",
+   "id": "uWunQI2KA5c",
+   "date": "2026-10-29"
+  },
+  {
+   "type": "tee",
+   "name": "[젠플록스X르아브] [2PACK] 플록스 에어로쿨 크롭 티셔츠",
+   "id": "uWunQI2KA5c",
+   "date": "2026-10-29"
+  },
+  {
+   "type": "coat",
+   "name": "[DIMITRI X 젠플록스] 모두의 캐시미어 발마칸 코트_2color",
+   "id": "uWunQI2KA5c",
+   "date": "2026-10-29"
+  },
+  {
    "type": "knit",
    "name": "[젠플록스 콜라보] 워셔블 컴포트 세미 크롭 헨리넥 니트_4COLOR",
-   "id": "dtCd76wqecQ",
-   "date": "2026-10-23"
+   "id": "7SQ4G5WM4XQ",
+   "date": "2026-10-28"
   },
   {
    "type": "coat",
    "name": "11.1 출시 디미트리블랙 콜라보 캐시미어 코트입니다! 엄청 가성비 좋게 레전드템으로 준비했으니 많관부입니다 ㅎㅎ",
-   "id": "dtCd76wqecQ",
-   "date": "2026-10-23"
+   "id": "5kuyxAg4JM4",
+   "date": "2026-10-27"
+  },
+  {
+   "type": "coat",
+   "name": "코트는 고민할 필요도 없이 그냥 이거 사시면 됨. 진짜 1황임.",
+   "id": "5kuyxAg4JM4",
+   "date": "2026-10-27"
+  },
+  {
+   "type": "wooljacket",
+   "name": "텍스처감이 겁나 매력적인. 겉으로만 보면 울블루종 같은 느낌으로 보여서 고급스러운 느낌도 줌",
+   "id": "9uTJD9MfPjo",
+   "date": "2026-10-26"
   },
   {
    "type": "knit",
@@ -765,12 +817,6 @@ window.CODI_CHANNEL = {
    "name": "웬즈데이오아시스 워셔블 컴포트 세미 크롭 라운드 니트_5COLOR",
    "id": "ll6K3c7640U",
    "date": "2026-10-22"
-  },
-  {
-   "type": "jeans",
-   "name": "[젠플록스X아워데이즈] 세미 커브드 데님 팬츠 [3COLORS]",
-   "id": "j69_IoYdwhc",
-   "date": "2026-10-19"
   },
   {
    "type": "sneakers",
