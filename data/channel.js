@@ -1,8 +1,13 @@
 // tools/build_channel_data.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_CHANNEL = {
- "updated": "2026-11-03",
- "count": 351,
+ "updated": "2026-11-04",
+ "count": 353,
  "deals": [
+  {
+   "id": "jj6NQCSM4w4",
+   "title": "느낌좋은 겨울 아이템 4가지 (feat. 드로우핏 쿠폰)",
+   "date": "2026-11-03"
+  },
   {
    "id": "dtCd76wqecQ",
    "title": "무탠다드 슈퍼세일 꿀템 총정리",
@@ -297,11 +302,6 @@ window.CODI_CHANNEL = {
    "id": "p7kUr-lsVEM",
    "title": "🚨 2026 무신사 클리어런스 위크 꿀템 100가지 🚨",
    "date": "2026-01-19"
-  },
-  {
-   "id": "jNwJ7iYZbnw",
-   "title": "무신사 멤버스데이 개이득 신발 4가지 추천 !",
-   "date": "2026-01-02"
   }
  ],
  "guides": [
@@ -725,8 +725,8 @@ window.CODI_CHANNEL = {
   {
    "type": "coat",
    "name": "[DIMITRI X 젠플록스] 모두의 캐시미어 발마칸 코트_2 COLOR",
-   "id": "ST20Mp90F8s",
-   "date": "2026-10-31"
+   "id": "M-JFTKgCT2A",
+   "date": "2026-11-03"
   },
   {
    "type": "coat",
