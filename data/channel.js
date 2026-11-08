@@ -1,7 +1,7 @@
 // tools/build_channel_data.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_CHANNEL = {
- "updated": "2026-11-05",
- "count": 353,
+ "updated": "2026-11-08",
+ "count": 355,
  "deals": [
   {
    "id": "jj6NQCSM4w4",
@@ -305,6 +305,11 @@ window.CODI_CHANNEL = {
   }
  ],
  "guides": [
+  {
+   "id": "yi_pH-khaKM",
+   "title": "코디를 재밌게해줄 한끗다른 느좋템 4가지 (feat. 카네이테이)",
+   "date": "2026-11-05"
+  },
   {
    "id": "5kuyxAg4JM4",
    "title": "입문자를 위한 남자 가성비 기본템 정리 (상의)",

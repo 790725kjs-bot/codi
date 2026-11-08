@@ -1,6 +1,6 @@
 // tools/build_basics.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_BASICS = {
- "updated": "2026-11-05",
+ "updated": "2026-11-08",
  "title": "기본템 총정리 : 30대 중반~40대 이상",
  "listUrl": "https://www.musinsa.com/curator/shop/dqugUZ?curationId=01KVQSM6MFV290MVY7NGCVF1R3",
  "guideUrl": "https://buttered-umbra-df5.notion.site/2026-3-0-388bbedf246a80c69a7cd7aeff8a2498",
@@ -141,7 +141,7 @@ window.CODI_BASICS = {
        "name": "[세미오버] 쿠반 오픈카라 린넨 셔츠 (화이트)",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20220603/2597096/2597096_1_500.jpg",
        "url": "https://www.musinsa.com/products/2597096?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XYD7IOLGF",
-       "price": 178000,
+       "price": 151300,
        "normal": 178000,
        "soldOut": false
       }
@@ -605,7 +605,7 @@ window.CODI_BASICS = {
        "name": "P.BRUTAL-649(p)",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20250807/5301413/5301413_17684788894537_500.jpg",
        "url": "https://www.musinsa.com/products/5301413?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XFskEYYwB",
-       "price": 359100,
+       "price": 319200,
        "normal": 399000,
        "soldOut": false
       }
@@ -666,7 +666,7 @@ window.CODI_BASICS = {
        "name": "피그먼트 다잉 반팔 티셔츠 컬렉션",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20240325/3986879/3986879_17760649463038_500.jpg",
        "url": "https://www.musinsa.com/products/3986879?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XEqIoOXDV",
-       "price": 70200,
+       "price": 50260,
        "normal": 78000,
        "soldOut": false
       },
@@ -675,7 +675,7 @@ window.CODI_BASICS = {
        "name": "피그먼트 다잉 헤비코튼 반팔 티셔츠 컬렉션",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20260421/6350180/6350180_17767598102235_500.jpg",
        "url": "https://www.musinsa.com/products/6350180?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XUN62ZEIX",
-       "price": 83160,
+       "price": 73440,
        "normal": 108000,
        "soldOut": false
       }
@@ -1058,7 +1058,7 @@ window.CODI_BASICS = {
        "name": "UNIFORM Field Boots Beige",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20240827/4374891/4374891_17268131370968_500.jpg",
        "url": "https://www.musinsa.com/products/4374891?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XYEV8cZE7",
-       "price": 242100,
+       "price": 183600,
        "normal": 269000,
        "soldOut": false
       },
@@ -1067,7 +1067,7 @@ window.CODI_BASICS = {
        "name": "아이언 레인저 8111 - 앰버 하니스",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20240418/4066143/4066143_17134170116471_500.jpg",
        "url": "https://www.musinsa.com/products/4066143?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XtQ9Ovu2y",
-       "price": 568020,
+       "price": 598000,
        "normal": 598000,
        "soldOut": false
       }
