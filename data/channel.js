@@ -1,7 +1,7 @@
 // tools/build_channel_data.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_CHANNEL = {
- "updated": "2026-11-08",
- "count": 355,
+ "updated": "2026-11-10",
+ "count": 357,
  "deals": [
   {
    "id": "jj6NQCSM4w4",
@@ -727,6 +727,18 @@ window.CODI_CHANNEL = {
   }
  ],
  "products": [
+  {
+   "type": "coat",
+   "name": "[DIMITRI X 젠플록스] © 모두의 캐시미어 발마칸 코트",
+   "id": "s0UBYXvgbeI",
+   "date": "2026-11-09"
+  },
+  {
+   "type": "padding",
+   "name": "11.21 출시되는 제가 기획한 패딩입니다 :)",
+   "id": "oUf-gL5huBg",
+   "date": "2026-11-08"
+  },
   {
    "type": "coat",
    "name": "[DIMITRI X 젠플록스] 모두의 캐시미어 발마칸 코트_2 COLOR",
