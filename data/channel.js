@@ -1,8 +1,18 @@
 // tools/build_channel_data.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_CHANNEL = {
- "updated": "2026-11-10",
- "count": 357,
+ "updated": "2026-11-16",
+ "count": 361,
  "deals": [
+  {
+   "id": "BygXqhFlunU",
+   "title": "블프급 저렴할 떄 챙겨줄 개이득아이템 5가지",
+   "date": "2026-11-15"
+  },
+  {
+   "id": "j-8TDErUu5A",
+   "title": "무신사블프 전에 29CM 블프로 먼저 건져야 함",
+   "date": "2026-11-10"
+  },
   {
    "id": "jj6NQCSM4w4",
    "title": "느낌좋은 겨울 아이템 4가지 (feat. 드로우핏 쿠폰)",
@@ -292,16 +302,6 @@ window.CODI_CHANNEL = {
    "id": "8U031Zpw8QY",
    "title": "따뜻해지면 입을 느낌 좋은 봄아이템 5가지 (feat. 알리스 20%쿠폰)",
    "date": "2026-02-02"
-  },
-  {
-   "id": "SHQ72R5ELh8",
-   "title": "🚨 무신사 클리어런스 위크 꿀템 5가지 추천 !",
-   "date": "2026-01-20"
-  },
-  {
-   "id": "p7kUr-lsVEM",
-   "title": "🚨 2026 무신사 클리어런스 위크 꿀템 100가지 🚨",
-   "date": "2026-01-19"
   }
  ],
  "guides": [
@@ -728,6 +728,30 @@ window.CODI_CHANNEL = {
  ],
  "products": [
   {
+   "type": "chino",
+   "name": "[젠플록스X아워데이즈] 세미 커브드 치노/데님 팬츠 (11.16 추가 컬러)",
+   "id": "JNrnF_pko_M",
+   "date": "2026-11-12"
+  },
+  {
+   "type": "knit",
+   "name": "[젠플록스 콜라보] 워셔블 컴포트 세미 크롭 헨리넥 니트_5COLOR 그레이 (11.18 출시)",
+   "id": "JNrnF_pko_M",
+   "date": "2026-11-12"
+  },
+  {
+   "type": "knit",
+   "name": "웬즈데이오아시스 [젠플록스 콜라보] 워셔블 컴포트 세미 크롭 헨리넥 니트 (11.19 출시되는 신규컬러)",
+   "id": "j-8TDErUu5A",
+   "date": "2026-11-10"
+  },
+  {
+   "type": "chino",
+   "name": "[젠플록스X아워데이즈] 세미 커브드 치노 팬츠 [3COLORS]",
+   "id": "j-8TDErUu5A",
+   "date": "2026-11-10"
+  },
+  {
    "type": "coat",
    "name": "[DIMITRI X 젠플록스] © 모두의 캐시미어 발마칸 코트",
    "id": "s0UBYXvgbeI",
@@ -796,12 +820,6 @@ window.CODI_CHANNEL = {
   {
    "type": "knit",
    "name": "웬즈데이오아시스 [젠플록스 콜라보] 워셔블 컴포트 세미 크롭 헨리넥 니트_4COLOR",
-   "id": "dtCd76wqecQ",
-   "date": "2026-10-23"
-  },
-  {
-   "type": "chino",
-   "name": "[젠플록스X아워데이즈] 세미 커브드 치노 팬츠 [3COLORS]",
    "id": "dtCd76wqecQ",
    "date": "2026-10-23"
   },
