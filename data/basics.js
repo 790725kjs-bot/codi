@@ -1,6 +1,6 @@
 // tools/build_basics.py 가 만든 파일. 직접 고치지 말 것.
 window.CODI_BASICS = {
- "updated": "2026-11-16",
+ "updated": "2026-11-17",
  "title": "기본템 총정리 : 30대 중반~40대 이상",
  "listUrl": "https://www.musinsa.com/curator/shop/dqugUZ?curationId=01KVQSM6MFV290MVY7NGCVF1R3",
  "guideUrl": "https://buttered-umbra-df5.notion.site/2026-3-0-388bbedf246a80c69a7cd7aeff8a2498",
@@ -141,7 +141,7 @@ window.CODI_BASICS = {
        "name": "[세미오버] 쿠반 오픈카라 린넨 셔츠 (화이트)",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20220603/2597096/2597096_1_500.jpg",
        "url": "https://www.musinsa.com/products/2597096?utm_term=01HZKHJFY76HP7QGKX96CFG5N3&utm_source=curator&utm_campaign=curator&utm_medium=if&utm_content=curator_curation_goodslink&source=XYD7IOLGF",
-       "price": 153080,
+       "price": 154080,
        "normal": 178000,
        "soldOut": false
       }
@@ -800,7 +800,7 @@ window.CODI_BASICS = {
        "name": "팬츠 Olive",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20180309/732698/732698_16807553592919_500.jpg",
        "url": "https://www.musinsa.com/products/732698?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XGuNotBNU",
-       "price": 64500,
+       "price": 51600,
        "normal": 129000,
        "soldOut": false
       }
@@ -1058,7 +1058,7 @@ window.CODI_BASICS = {
        "name": "UNIFORM Field Boots Beige",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20240827/4374891/4374891_17268131370968_500.jpg",
        "url": "https://www.musinsa.com/products/4374891?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XYEV8cZE7",
-       "price": 183600,
+       "price": 188190,
        "normal": 269000,
        "soldOut": false
       },
@@ -1067,7 +1067,7 @@ window.CODI_BASICS = {
        "name": "아이언 레인저 8111 - 앰버 하니스",
        "img": "https://image.msscdn.net/thumbnails/images/goods_img/20240418/4066143/4066143_17134170116471_500.jpg",
        "url": "https://www.musinsa.com/products/4066143?utm_source=curator&utm_medium=if&utm_campaign=curator&utm_content=curator_curation_goodslink&utm_term=01HZKHJFY76HP7QGKX96CFG5N3&source=XtQ9Ovu2y",
-       "price": 598000,
+       "price": 538200,
        "normal": 598000,
        "soldOut": false
       }
